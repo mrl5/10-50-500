@@ -13,4 +13,7 @@ Inspired by [30 Java Programming Tips and Best Practices for Beginners] article.
 - app in Perl
 - app in Python
 
+# Stay tuned folks
+<img src="https://pbs.twimg.com/media/DZZiihZWkAALJps.jpg"/>
+
 [30 Java Programming Tips and Best Practices for Beginners]: https://www.javacodegeeks.com/2015/06/java-programming-tips-best-practices-beginners.html
