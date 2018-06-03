@@ -7,11 +7,11 @@
 DAMN!
 
 # Milestone
-Inspired by [30 Java Programming Tips and Best Practices for Beginners] article. I will make an algorithm which will check if **0-50-500 Rule** was broken for given Java project
+Inspired by [30 Java Programming Tips and Best Practices for Beginners] article. I will make an algorithm which will check if **10-50-500 Rule** was broken for given Java project
 
 # TODOs
-- app in Perl
-- app in Python
+1. [ ] app in Perl
+2. [ ] app in Python
 
 # Stay tuned folks
 <img src="https://pbs.twimg.com/media/DZZiihZWkAALJps.jpg"/>
