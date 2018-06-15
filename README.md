@@ -7,7 +7,7 @@
 DAMN!
 
 # Milestone
-Inspired by [30 Java Programming Tips and Best Practices for Beginners] article. I will make an algorithm which will check if **10-50-500 Rule** was broken for given Java project
+Inspired by [30 Java Programming Tips and Best Practices for Beginners] article. I will make an algorithm which will check if **10-50-500 Rule** was broken for given ~~Java~~ Maven project
 
 # TODOs
 1. [ ] app in Perl
