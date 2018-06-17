@@ -3,8 +3,6 @@
 # Works with Java source code
 # Probably would also work with other C-like languages
 
-# HowTo: 'perl RawCodeProvider.pl File.java'
-
 # References:
 # 1) https://stackoverflow.com/questions/1712016/how-do-i-include-functions-from-another-file-in-my-perl-script
 
