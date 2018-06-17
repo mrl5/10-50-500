@@ -1,7 +1,44 @@
 README.md
+.idea
 
+# Created by https://www.gitignore.io/api/pycharm,perl
 
-# Created by https://www.gitignore.io/api/pycharm
+### Perl ###
+!Build/
+.last_cover_stats
+/META.yml
+/META.json
+/MYMETA.*
+*.o
+*.pm.tdy
+*.bs
+
+# Devel::Cover
+cover_db/
+
+# Devel::NYTProf
+nytprof.out
+
+# Dizt::Zilla
+/.build/
+
+# Module::Build
+_build/
+Build
+Build.bat
+
+# Module::Install
+inc/
+
+# ExtUitls::MakeMaker
+/blib/
+/_eumm/
+/*.gz
+/Makefile
+/Makefile.old
+/MANIFEST.bak
+/pm_to_blib
+/*.zip
 
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
@@ -69,5 +106,4 @@ fabric.properties
 .idea/sonarlint
 
 
-# End of https://www.gitignore.io/api/pycharm
-
+# End of https://www.gitignore.io/api/pycharm,perl
