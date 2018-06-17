@@ -10,6 +10,10 @@ while (<>) {
 
     #remove spaces from the beggining of the line
     s/^\s+//;
+    #remove '/* comments */'
+    s/^\/\*.*\*\///;
+    #remove '//comments'
+    s/^\/\/.*//;
 
     #add non-empty line to the end of array
     if ($_ ne '') {
