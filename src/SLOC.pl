@@ -4,12 +4,9 @@
 
 use strict;
 use warnings;
-
 use RawCodeProvider;
 
-my @output;
-
-@output = getRawCode;
+my @output = getRawCode;
 
 # todo focus only on code
 print "\nSLOC: $#output\n";
