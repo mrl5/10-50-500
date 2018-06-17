@@ -11,6 +11,12 @@ while (<>) {
     #remove spaces from the beggining of the line
     s/^\s+//;
 
+    #add non-empty line to the end of array
+    if ($_ ne '') {
+        print "$_\n";#tmp
+        push(@lines, $_);
+    }
+
 }
 
 #foreach (@lines) {
