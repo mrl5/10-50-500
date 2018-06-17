@@ -3,6 +3,8 @@ use strict;
 use warnings;
 
 my @lines;
+my @sloc;
+my $multiLineComment = 0;
 
 while (<>) {
     #remove \n from end of the line
@@ -17,15 +19,28 @@ while (<>) {
 
     #add non-empty line to the end of array
     if ($_ ne '') {
-        print "$_\n";#tmp
         push(@lines, $_);
     }
 
 }
 
-#foreach (@lines) {
-#  print "$_\n";
-#  s/^\/\*.*\*\///;
-#  print "$_\n";
-#  #push(@sloc, $_)
-#}
+foreach (@lines) {
+    #skip /** multi-line comments
+    if (/^\/(\*)+/) {
+        $multiLineComment = 1;
+        next;
+    }
+    #check if multi-line comment was closed
+    elsif (/(\*)+\//) {
+        $multiLineComment = 0;
+        next;
+    }
+    #add line if it's not multi-line comment
+    elsif ($multiLineComment == 0) {
+        push(@sloc, $_);
+    }
+}
+
+foreach (@sloc) {
+    print "$_\n";
+}
