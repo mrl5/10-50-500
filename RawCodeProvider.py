@@ -20,22 +20,22 @@ def get_raw_code(file_path):
             # ignore empty lines
             if line != '':
                 # skip /** multi-line comments
-                if (re.match(r'^\/(\*)+', line)):
+                if re.match(r'^\/(\*)+', line):
                     multi_line_comment = True
                     continue
 
                 # check if multi-line comment was closed
-                elif (re.match(r'(\*)+\/', line)):
+                elif re.match(r'(\*)+\/', line):
                     multi_line_comment = False
                     continue
 
                 # add line if it's not multi-line comment
-                elif (multi_line_comment == False):
+                if not multi_line_comment:
                     raw_code.append(line)
     return raw_code
 
 
 if __name__ == "__main__":
-    file_path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    for line in get_raw_code(file_path):
-        print(line)
+    path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
+    for raw_line in get_raw_code(path):
+        print(raw_line)
