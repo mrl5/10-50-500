@@ -7,7 +7,7 @@
 # 1) https://stackoverflow.com/questions/1712016/how-do-i-include-functions-from-another-file-in-my-perl-script
 
 #perlmod
-package RawCodeProvider;
+package lib::RawCodeProvider;
 use strict;
 use warnings;
 use Exporter;

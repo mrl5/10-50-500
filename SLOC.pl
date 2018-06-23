@@ -4,7 +4,7 @@
 
 use strict;
 use warnings;
-use RawCodeProvider;
+use lib::RawCodeProvider;
 
 my @output = getRawCode;
 
