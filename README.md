@@ -10,10 +10,12 @@ DAMN!
 Inspired by [30 Java Programming Tips and Best Practices for Beginners] article. I will make an algorithm which will check if **10-50-500 Rule** was broken for given ~~Java~~ Maven project
 
 # TODOs
-1. [ ] app in Perl
-2. [ ] app in Python
+1. [ ] [app in Perl]
+2. [ ] [app in Python]
 
 # Stay tuned folks
 <img src="https://pbs.twimg.com/media/DZZiihZWkAALJps.jpg"/>
 
 [30 Java Programming Tips and Best Practices for Beginners]: https://www.javacodegeeks.com/2015/06/java-programming-tips-best-practices-beginners.html
+[app in Perl]: https://github.com/mrl5/10-50-500/tree/perl-dev
+[app in Python]: https://github.com/mrl5/10-50-500/tree/python-dev
