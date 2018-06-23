@@ -19,9 +19,9 @@ def get_raw_code(file_path):
             # remove spaces from the beggining of the line
             line = re.sub(r'^\s+', '', line).rstrip()
             # remove '/* comments */'
-            line = re.sub(r'^\/\*.*\*\/', '', line).rstrip()
+            line = re.sub(r'^\/\*.*\*\/', '', line)
             # remove '//comments'
-            line = re.sub(r'^\/\/.*', '', line).rstrip()
+            line = re.sub(r'^\/\/.*', '', line)
 
             # ignore empty lines
             if line != '':
