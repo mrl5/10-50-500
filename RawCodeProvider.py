@@ -16,12 +16,14 @@ def get_raw_code(file_path):
         multi_line_comment = False
 
         for line in f:
-            # remove spaces from the beggining of the line
+            # remove spaces from the beginning of the line
             line = re.sub(r'^\s+', '', line).rstrip()
             # remove '/* comments */'
             line = re.sub(r'^\/\*.*\*\/', '', line)
             # remove '//comments'
             line = re.sub(r'^\/\/.*', '', line)
+            # remove trailing whitespaces
+            line = re.sub(r'\s+$', '', line)
 
             # ignore empty lines
             if line != '':
