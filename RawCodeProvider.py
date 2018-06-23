@@ -5,6 +5,12 @@ import sys
 
 
 def get_raw_code(file_path):
+    """
+    Removes empty lines, leading whitespaces, single and multi line comments
+
+    :param file_path: path to .java file
+    :return: list with raw code
+    """
     with open(file_path, "r") as f:
         raw_code = []
         multi_line_comment = False
