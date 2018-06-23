@@ -3,6 +3,6 @@
 import sys
 import RawCodeProvider
 
-filePath = sys.argv[1] #"/home/kuba/projects/IdeaProjects/JInvestor/src/main/java/com/tuxnet/jinvestor/utils/H2.java"
+filePath = sys.argv[1]
 rawCode = RawCodeProvider.getRawCode(filePath)
 print("SLOC:", len(rawCode))
