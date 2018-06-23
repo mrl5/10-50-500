@@ -16,12 +16,14 @@ def get_raw_code(file_path):
         multi_line_comment = False
 
         for line in f:
-            # remove spaces from the beggining of the line
+            # remove spaces from the beginning of the line
             line = re.sub(r'^\s+', '', line).rstrip()
             # remove '/* comments */'
             line = re.sub(r'^\/\*.*\*\/', '', line)
             # remove '//comments'
             line = re.sub(r'^\/\/.*', '', line)
+            # remove trailing whitespaces
+            line = re.sub(r'\s+$', '', line)
 
             # ignore empty lines
             if line != '':
@@ -41,7 +43,49 @@ def get_raw_code(file_path):
     return raw_code
 
 
+def pretty_print(unformatted_code_list):
+    """
+    Refactors code with an indentation style
+
+    :param unformatted_code_list: list with code to be formatted into blocks of code
+    :return: list with pretty-formatted code
+    """
+
+    formatted_code = []
+    indentation = "    "
+    nest_level = 0
+    wait_for_next_line = False
+    # special case eg.: } catch (NullPointerException e) {
+    special_case = False
+    open_bracket = "{"
+    close_bracket = "}"
+
+    for line in unformatted_code_list:
+        if line.endswith(open_bracket) and not line.startswith(close_bracket):
+            nest_level += 1
+            wait_for_next_line = True
+
+        # case eg.: "}" or "} else"
+        elif line.startswith(close_bracket) and not line.endswith(open_bracket):
+            nest_level -= 1 if not special_case else 2
+            wait_for_next_line = False
+            special_case = False
+
+        # case eg.: "} catch (NullPointerException e) {"
+        elif line.endswith(open_bracket) and line.startswith(close_bracket):
+            nest_level += 1 if not special_case else 0
+            wait_for_next_line = True
+            special_case = True
+
+        formatted_code.append(nest_level * indentation + line if not wait_for_next_line
+                              else (nest_level - 1) * indentation + line)
+        wait_for_next_line = False
+
+    return formatted_code
+
+
 if __name__ == "__main__":
     path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    for raw_line in get_raw_code(path):
-        print(raw_line)
+    pretty_print(get_raw_code(path))
+    for formatted_line in pretty_print(get_raw_code(path)):
+        print(formatted_line)
