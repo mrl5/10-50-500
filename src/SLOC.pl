@@ -9,4 +9,4 @@ use RawCodeProvider;
 my @output = getRawCode;
 
 # todo focus only on code
-print "\nSLOC: $#output\n";
+print "\nSLOC:", $#output+1,"\n";
