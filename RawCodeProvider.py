@@ -55,6 +55,7 @@ def pretty_print(unformatted_code_list):
     indentation = "    "
     nest_level = 0
     wait_for_next_line = False
+    # special case eg.: } catch (NullPointerException e) {
     special_case = False
     open_bracket = "{"
     close_bracket = "}"
@@ -63,26 +64,28 @@ def pretty_print(unformatted_code_list):
         if line.endswith(open_bracket) and not line.startswith(close_bracket):
             nest_level += 1
             wait_for_next_line = True
-        elif line.endswith(close_bracket):
+
+        # case eg.: "}" or "} else"
+        elif line.startswith(close_bracket) and not line.endswith(open_bracket):
             nest_level -= 1 if not special_case else 2
             wait_for_next_line = False
             special_case = False
+
+        # case eg.: "} catch (NullPointerException e) {"
         elif line.endswith(open_bracket) and line.startswith(close_bracket):
             nest_level += 1 if not special_case else 0
             wait_for_next_line = True
             special_case = True
 
-        if wait_for_next_line:
-            print((nest_level - 1) * indentation + line if nest_level > -1 else line)
-        else:
-            print(nest_level * indentation + line)
-
+        formatted_code.append(nest_level * indentation + line if not wait_for_next_line
+                              else (nest_level - 1) * indentation + line)
         wait_for_next_line = False
+
     return formatted_code
 
 
 if __name__ == "__main__":
     path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
     pretty_print(get_raw_code(path))
-    # for formatted_line in pretty_print(get_raw_code(path)):
-    # print(formatted_line)
+    for formatted_line in pretty_print(get_raw_code(path)):
+        print(formatted_line)
