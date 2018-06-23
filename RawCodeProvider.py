@@ -6,7 +6,7 @@ import sys
 
 def get_raw_code(file_path):
     """
-    Removes empty lines, leading whitespaces, single and multi line comments
+    Removes empty lines, leading and trailing whitespaces, single and multi line comments
 
     :param file_path: path to .java file
     :return: list with raw code
@@ -16,7 +16,7 @@ def get_raw_code(file_path):
         multi_line_comment = False
 
         for line in f:
-            # remove spaces from the beginning of the line
+            # remove spaces from the beginning of the line and removes trailing newline
             line = re.sub(r'^\s+', '', line).rstrip()
             # remove '/* comments */'
             line = re.sub(r'^\/\*.*\*\/', '', line)
