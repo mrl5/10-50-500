@@ -43,7 +43,46 @@ def get_raw_code(file_path):
     return raw_code
 
 
+def pretty_print(unformatted_code_list):
+    """
+    Refactors code with an indentation style
+
+    :param unformatted_code_list: list with code to be formatted into blocks of code
+    :return: list with pretty-formatted code
+    """
+
+    formatted_code = []
+    indentation = "    "
+    nest_level = 0
+    wait_for_next_line = False
+    special_case = False
+    open_bracket = "{"
+    close_bracket = "}"
+
+    for line in unformatted_code_list:
+        if line.endswith(open_bracket) and not line.startswith(close_bracket):
+            nest_level += 1
+            wait_for_next_line = True
+        elif line.endswith(close_bracket):
+            nest_level -= 1 if not special_case else 2
+            wait_for_next_line = False
+            special_case = False
+        elif line.endswith(open_bracket) and line.startswith(close_bracket):
+            nest_level += 1 if not special_case else 0
+            wait_for_next_line = True
+            special_case = True
+
+        if wait_for_next_line:
+            print((nest_level - 1) * indentation + line if nest_level > -1 else line)
+        else:
+            print(nest_level * indentation + line)
+
+        wait_for_next_line = False
+    return formatted_code
+
+
 if __name__ == "__main__":
     path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    for raw_line in get_raw_code(path):
-        print(raw_line)
+    pretty_print(get_raw_code(path))
+    # for formatted_line in pretty_print(get_raw_code(path)):
+    # print(formatted_line)
