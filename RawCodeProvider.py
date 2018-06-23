@@ -4,10 +4,10 @@ import re
 import sys
 
 
-def getRawCode(filePath):
-    with open(filePath, "r") as f:
-        rawCode = []
-        multiLineComment = False
+def get_raw_code(file_path):
+    with open(file_path, "r") as f:
+        raw_code = []
+        multi_line_comment = False
 
         for line in f:
             # remove spaces from the beggining of the line
@@ -21,21 +21,21 @@ def getRawCode(filePath):
             if line != '':
                 # skip /** multi-line comments
                 if (re.match(r'^\/(\*)+', line)):
-                    multiLineComment = True
+                    multi_line_comment = True
                     continue
 
                 # check if multi-line comment was closed
                 elif (re.match(r'(\*)+\/', line)):
-                    multiLineComment = False
+                    multi_line_comment = False
                     continue
 
                 # add line if it's not multi-line comment
-                elif (multiLineComment == False):
-                    rawCode.append(line)
-    return rawCode
+                elif (multi_line_comment == False):
+                    raw_code.append(line)
+    return raw_code
 
 
 if __name__ == "__main__":
-    filePath = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    for line in getRawCode(filePath):
+    file_path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
+    for line in get_raw_code(file_path):
         print(line)
