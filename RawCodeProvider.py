@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import sys
 
 
 def getRawCode(filePath):
@@ -32,3 +33,9 @@ def getRawCode(filePath):
                 elif (multiLineComment == False):
                     rawCode.append(line)
     return rawCode
+
+
+if __name__ == "__main__":
+    filePath = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
+    for line in getRawCode(filePath):
+        print(line)
