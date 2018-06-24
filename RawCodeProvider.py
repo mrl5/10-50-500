@@ -45,7 +45,7 @@ def get_raw_code(file_path):
 
 def pretty_print(unformatted_code_list):
     """
-    Refactors code with an indentation style
+    Formats code into blocks with an indentation style
 
     :param unformatted_code_list: list with code to be formatted into blocks of code
     :return: list with pretty-formatted code
@@ -86,6 +86,6 @@ def pretty_print(unformatted_code_list):
 
 if __name__ == "__main__":
     path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    pretty_print(get_raw_code(path))
+
     for formatted_line in pretty_print(get_raw_code(path)):
         print(formatted_line)
