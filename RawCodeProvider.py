@@ -19,55 +19,48 @@ def get_raw_code(file_path):
 
         for line in f:
             # remove spaces from the beginning of the line and remove trailing newline
-            pattern = '''
+            line = re.sub(r'''
             ^       # start of string
             \s+     # one or more whitespaces
-            '''
-            line = re.sub(pattern, '', line, 0, re.VERBOSE).rstrip()
+            ''', '', line, 0, re.VERBOSE).rstrip()
 
             # remove '/* comments */'
-            pattern = '''
+            line = re.sub(r'''
             ^       # start of string
             /\*     # "/*" string
             .*      # any character (except line break) zero or more times
             \*/     # "*/" string
-            '''
-            line = re.sub(pattern, '', line, 0, re.VERBOSE)
+            ''', '', line, 0, re.VERBOSE)
 
             # remove '//comments'
-            pattern = '''
+            line = re.sub(r'''
             ^       # start of string
             //      # "//" string
             .*      # any character (except line break) zero or more times
-            '''
-            line = re.sub(pattern, '', line, 0, re.VERBOSE)
+            ''', '', line, 0, re.VERBOSE)
 
             # remove trailing whitespaces
-            pattern = '''
+            line = re.sub(r'''
             \s+     # one or more whitespaces
             $       # end of string
-            '''
-            line = re.sub(pattern, '', line, 0, re.VERBOSE)
+            ''', '', line, 0, re.VERBOSE)
 
             # ignore empty lines
             if line != '':
-                start_of_multiline_comment_pattern = '''
+                # skip multi-line comments (/*)
+                if re.match(r'''
                 ^       # start of string
                 /       # "/" string
                 \*+     # "*" string one or more times
-                '''
-                end_of_multiline_comment_pattern = '''
-                \*+     # "*" string one or more times
-                /       # "/" string
-                '''
-
-                # skip multi-line comments (/*)
-                if re.match(start_of_multiline_comment_pattern, line, re.VERBOSE):
+                ''', line, re.VERBOSE):
                     multi_line_comment = True
                     continue
 
                 # check if multi-line comment was closed (*/)
-                elif re.match(end_of_multiline_comment_pattern, line, re.VERBOSE):
+                elif re.match(r'''
+                \*+     # "*" string one or more times
+                /       # "/" string
+                ''', line, re.VERBOSE):
                     multi_line_comment = False
                     continue
 
