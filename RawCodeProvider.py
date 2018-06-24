@@ -19,21 +19,21 @@ def get_raw_code(file_path):
             # remove spaces from the beginning of the line and removes trailing newline
             line = re.sub(r'^\s+', '', line).rstrip()
             # remove '/* comments */'
-            line = re.sub(r'^\/\*.*\*\/', '', line)
+            line = re.sub(r'^/\*.*\*/', '', line)
             # remove '//comments'
-            line = re.sub(r'^\/\/.*', '', line)
+            line = re.sub(r'^//.*', '', line)
             # remove trailing whitespaces
             line = re.sub(r'\s+$', '', line)
 
             # ignore empty lines
             if line != '':
                 # skip /** multi-line comments
-                if re.match(r'^\/(\*)+', line):
+                if re.match(r'^/(\*)+', line):
                     multi_line_comment = True
                     continue
 
                 # check if multi-line comment was closed
-                elif re.match(r'(\*)+\/', line):
+                elif re.match(r'(\*)+/', line):
                     multi_line_comment = False
                     continue
 
