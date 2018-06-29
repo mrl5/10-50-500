@@ -3,7 +3,6 @@
 __author__ = "mrl5"
 
 import re
-import sys
 
 
 def get_raw_code(file_path):
@@ -112,6 +111,8 @@ def pretty_print(unformatted_code_list):
 
 
 if __name__ == "__main__":
+    import sys
+
     path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
 
     for formatted_line in pretty_print(get_raw_code(path)):
