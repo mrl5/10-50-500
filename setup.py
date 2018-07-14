@@ -11,7 +11,7 @@ with open('LICENSE') as f:
 setup(
     name='10-50-500',
     version='0.1.0',
-    description='Check maven project against 10-50-500 rule',
+    description='Checks maven project against 10-50-500 rule',
     long_description=readme,
     author='mrl5',
     author_email='secret',
