@@ -17,11 +17,9 @@ class Explorer:
         self.is_maven_project = False
         try:
             self.is_maven_project = self.verify_directory_layout(project_dir)
-
             self.source_dir = ''
             self.packages_dir = ''
             self.packages = dict()
-
             if self.is_maven_project:
                 source_dir = project_dir
                 for item in self.dirs:
@@ -46,11 +44,12 @@ class Explorer:
             else:
                 # append "src/" with next dir => "src/item/"
                 errmsg[item] = re.sub(r'''
-                            (       # start of grouping
-                            [a-z]+/ # match "substring/"
-                            )       # end of grouping
-                            \"      # ending with "
-                            ''', r'\1' + item + "/\"", errmsg[self.dirs[i - 1]], 0, re.VERBOSE)
+                                (       # start of grouping
+                                [a-z]+  # match one or more small letters
+                                /       # "/" character
+                                )       # end of grouping
+                                \"      # ending with "
+                                ''', r'\1' + item + "/\"", errmsg[self.dirs[i - 1]], 0, re.VERBOSE)
         # check for Standard Directory Layout
         current_path = path
         for item in self.dirs:
@@ -91,13 +90,14 @@ class Explorer:
         relative_path = path.split(self.source_dir)[1]
         # remove first character (directory leftover)
         relative_path = re.sub(r'''
-                            ^.  # start of string
+                            ^   # start of string
+                            .   # any character (only one)
                             (   # start of grouping
-                            .+  # one or more character
+                            .+  # one or more characters
                             $   # end of string
                             )   # end of grouping
                             ''', r'\1', relative_path, 0, re.VERBOSE)
-        # convert relative path to Java package name
+        # convert relative path into Java package name
         package = re.sub('/', '.', relative_path, 0)
         return package
 
@@ -150,13 +150,12 @@ if __name__ == "__main__":
 
     project_dir = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
     e = Explorer(project_dir)
-    
-    if e.is_maven_project:
-        e.get_project_structure()
 
+    if not e.is_maven_project:
+        print("Exiting with error")
+    else:
+        e.get_project_structure()
         for key in e.packages:
             print(key + ":")
             for value in e.packages[key]:
                 print("\t" + value)
-    else:
-        print("Exiting with error")
