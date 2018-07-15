@@ -74,7 +74,7 @@ class Explorer:
         for item in os.listdir(path):
             path_to_item = os.path.join(path, item)
             if os.path.isfile(path_to_item) and item.endswith(".java"):
-                classes.append(item)
+                classes.append({item: path_to_item})
             elif os.path.isdir(path_to_item):
                 directories.append(path_to_item)
         if classes:
@@ -155,7 +155,8 @@ if __name__ == "__main__":
         print("Exiting with error")
     else:
         e.get_project_structure()
-        for key in e.packages:
-            print(key + ":")
-            for value in e.packages[key]:
-                print("\t" + value)
+        for package in e.packages:
+            print("\n", package, ":", sep='')
+            for file in e.packages[package]:
+                for key in file:
+                    print("\t" + key)
