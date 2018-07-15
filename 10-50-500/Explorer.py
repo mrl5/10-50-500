@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# necessary if using Python2
+from __future__ import print_function
+
 __author__ = "mrl5"
 
 import os
