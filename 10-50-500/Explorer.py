@@ -107,9 +107,8 @@ class Explorer:
         :return:
         """
         if not self.is_maven_project:
-            print("Given path doesn't point to the Maven project", self.project_dir, sep=": ")
+            print("Given path doesn't point to the Maven project: " + self.project_dir)
         else:
-            paths_to_packages = list()
             paths_to_explore = list()
             for item in os.listdir(self.packages_dir):
                 path_to_item = os.path.join(self.packages_dir, item)
@@ -155,8 +154,8 @@ if __name__ == "__main__":
         print("Exiting with error")
     else:
         e.get_project_structure()
-        for package in e.packages:
+        for package, files in sorted(e.packages.items()):
             print("\n", package, ":", sep='')
-            for file in e.packages[package]:
-                for key in file:
+            for dictionary in files:
+                for key, value in dictionary.items():
                     print("\t" + key)
