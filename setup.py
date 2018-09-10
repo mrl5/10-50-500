@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='10-50-500',
-    version='0.1.0',
+    version='1.0.0-SNAPSHOT',
     description='Checks maven project against 10-50-500 rule',
     long_description=readme,
     author='mrl5',
