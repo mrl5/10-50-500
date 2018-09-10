@@ -13,7 +13,6 @@ class Explorer:
     """
     Class for Maven project exploration
     """
-
     def __init__(self, project_dir):
         self.project_dir = project_dir
         self.dirs = ['src', 'main', 'java']
@@ -110,7 +109,7 @@ class Explorer:
         :return:
         """
         if not self.is_maven_project:
-            print("Given path doesn't point to the Maven project: " + self.project_dir)
+            print("Given path doesn't point to the Maven project:", self.project_dir)
         else:
             paths_to_explore = list()
             for item in os.listdir(self.packages_dir):
@@ -130,7 +129,6 @@ def find_packages(path):
     packages_dir = path
     while len(os.listdir(packages_dir)) == 1:
         packages_dir = os.path.join(packages_dir, os.listdir(packages_dir)[0])
-
     return packages_dir
 
 
@@ -147,9 +145,7 @@ def find_dir(path, directory):
             return True
 
 
-if __name__ == "__main__":
-    import sys
-
+def main():
     project_dir = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
     e = Explorer(project_dir)
 
@@ -162,3 +158,8 @@ if __name__ == "__main__":
             for dictionary in files:
                 for key, value in dictionary.items():
                     print("\t" + key)
+
+
+if __name__ == "__main__":
+    import sys
+    main()
