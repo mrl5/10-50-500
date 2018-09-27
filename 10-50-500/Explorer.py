@@ -1,7 +1,27 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 
 class Explorer:
     """
     Class for Maven project exploration
     """
+
+    def __init__(self, project_dir=os.getcwd()):
+        self.project_dir = project_dir
+
+
+def verify_directory_layout(project_dir):
+    """
+    Verifies if directory from path has Maven's "Standard Directory Layout" (src/main/java)
+
+    :param project_dir: path to the project
+    :raises FileNotFoundError: when a directory is requested but doesn't exist
+    :raises NotADirectoryError: when path leads to something which is not a directory
+    :return: True if directory from path has Maven's "Standard Directory Layout"; else False
+    """
+    os.chdir(project_dir)
+    maven_standard_directory_layout = os.path.join("src", "main", "java")
+    path_to_analyse = os.path.join(project_dir, maven_standard_directory_layout)
+    return os.path.exists(path_to_analyse)
