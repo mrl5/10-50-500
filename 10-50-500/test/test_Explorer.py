@@ -4,6 +4,8 @@ import pytest
 
 __author__ = "mrl5"
 
+from Explorer import Explorer
+
 """
 Scenario:
 1) test if Explorer can be instantiated
@@ -18,3 +20,7 @@ Scenario:
     
 4) test 'get_project_structure' method: fill 'self.packages' dictionary with structure "{package: {class: path/to/class}}"
 """
+
+
+def test_instance_of_explorer():
+    explorer = Explorer()
