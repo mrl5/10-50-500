@@ -17,7 +17,7 @@ Scenario:
     - remove empty lines
     - remove multi-line comments (/*\n\n\n*/)
     - read from file
-    - return list with raw code
+    - return list
     
 2. pretty_print
     - "something {"
@@ -110,3 +110,11 @@ def test_rm_multiline_comments_tricky(directory):
     output_list = ["Be yourself", "no matter what they say"]
     write_to_file(file, input_list)
     assert get_raw_code(file) == output_list
+
+
+def test_return_list(directory):
+    test_dir = directory
+    file = os.path.join(str(test_dir), "file.txt")
+    input_list = ["test"]
+    write_to_file(file, input_list)
+    assert type(get_raw_code(file)) is list
