@@ -2,6 +2,7 @@
 
 import pytest
 import os
+import re
 
 __author__ = "mrl5"
 
@@ -33,33 +34,71 @@ Scenario:
 """
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def explorer():
     explorer = Explorer()
     return explorer
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def maven_sdl(tmpdir):
     test_project = tmpdir.mkdir("test_project")
     os.makedirs(os.path.join(str(test_project), "src", "main", "java"))
     return test_project
 
 
+class ProjectDirectory:
+    def __init__(self, maven_sdl):
+        self.directory = maven_sdl
+        self.java_sources = os.path.join(str(self.directory), "src", "main", "java")
+        pkg_one = os.path.join(self.java_sources, "com", "tuxnet", "p_one")
+        pkg_two = os.path.join(pkg_one, "p_two")
+        pkg_three = os.path.join(self.java_sources, "com", "tuxnet", "p_three")
+        self.pkgs = ["com.tuxnet.p_one", "com.tuxnet.p_one.p_two", "com.tuxnet.p_three"]
+        self.packages = {pkg: [pkg_one, pkg_two, pkg_three][i] for i, pkg in enumerate(self.pkgs)}
+        self.test_files_string = '12'
+
+    def setup_project(self):
+        """
+        Sets up test directory containing Maven project structure
+        """
+        os.makedirs(os.path.join(str(self.directory), "some", "random", "dir"))
+        # for each package create sample files
+        for package_name, package_path in self.packages.items():
+            # necessary if com/tuxnet/p_one/p_two was created before com/tuxnet/p_one
+            try:
+                os.makedirs(package_path)
+            except FileExistsError:
+                pass
+            for java_class in self.test_files_string:
+                java_file = str("{}.{}").format(java_class, "java")
+                some_file = str("{}.{}").format(java_class, "txt")
+                os.mknod(os.path.join(package_path, java_file))
+                os.mknod(os.path.join(str(package_path), some_file))
+
+
+@pytest.fixture(scope="function")
+def maven_test_project(maven_sdl):
+    maven_project = ProjectDirectory(maven_sdl)
+    maven_project.setup_project()
+    return maven_project
+
+
 # verify_directory_layout
 def test_correct_directory_layout(maven_sdl):
-    assert verify_directory_layout(str(maven_sdl)) is True
+    test_directory = maven_sdl
+    assert verify_directory_layout(str(test_directory)) is True
 
 
 def test_false_directory_layout(tmpdir):
-    test_project = tmpdir.mkdir("test_project")
-    os.makedirs(os.path.join(str(test_project), "some", "random", "dir"))
-    assert verify_directory_layout(str(test_project)) is False
+    test_directory = tmpdir.mkdir("test_project")
+    os.makedirs(os.path.join(str(test_directory), "some", "random", "dir"))
+    assert verify_directory_layout(str(test_directory)) is False
 
 
 def test_path_doesnt_exist(tmpdir):
-    test_dir = tmpdir.mkdir("test_dir")
-    imaginary_project = os.path.join(str(test_dir), "imaginary", "project")
+    test_directory = tmpdir.mkdir("test_dir")
+    imaginary_project = os.path.join(str(test_directory), "imaginary", "project")
     with pytest.raises(FileNotFoundError):
         verify_directory_layout(imaginary_project)
 
@@ -73,38 +112,39 @@ def test_path_to_file(tmpdir):
 
 # get_package_name
 def test_get_package_name():
-    path_to_package = os.path.join(os.sep, "com", "tuxnet", "package")
-    assert get_package_name(path_to_package) == "com.tuxnet.package"
+    dirs = ["com", "tuxnet", "package"]
+    path_to_package = os.path.join(os.sep, dirs[0], dirs[1], dirs[2])
+    # com.tuxnet.package
+    assert get_package_name(path_to_package) == ".".join(dirs)
 
 
 def test_multi_sep_package_name():
-    path_to_package = os.path.join(os.sep, "com", "tuxnet", "package")
+    dirs = ["com", "tuxnet", "package"]
+    path_to_package = os.path.join(os.sep, dirs[0], dirs[1], dirs[2])
     path = "{}{}".format(os.sep, path_to_package)
-    assert get_package_name(path) == "com.tuxnet.package"
+    # com.tuxnet.package
+    assert get_package_name(path) == ".".join(dirs)
 
 
 # self._add_package
-def test_add_package(explorer, maven_sdl):
+def test_add_package(explorer, maven_test_project):
     # make sure that the cwd is relative
-    os.chdir(str(maven_sdl))
-    os.makedirs(os.path.join("com", "package", "some_dir"))
-    package_dir = os.path.join("com", "package")
-    package_name = "com.package"
-    some_dir = "some_dir"
+    os.chdir(maven_test_project.java_sources)
+    package_name = maven_test_project.pkgs[0]
+    package_dir = maven_test_project.packages[package_name]
+    relative_package_dir = re.sub("{}{}{}".format("^", maven_test_project.java_sources, os.sep), '', package_dir)
+
     java_classes = {}
     synthetic_result = {package_name: java_classes}
+    for item in os.listdir(relative_package_dir):
+        item_path = os.path.join(relative_package_dir, item)
+        if os.path.isfile(item_path) and item.endswith(".java"):
+            java_class = os.path.basename(item)[0]
+            # make sure to provide full absolute path
+            abs_path_to_class = os.path.join(os.path.abspath(maven_test_project.java_sources), relative_package_dir, item)
+            java_classes.update({java_class: abs_path_to_class})
 
-    for java_class in '12345':
-        java_file = str("{}.{}").format(java_class, "java")
-        some_file = str("{}.{}").format(java_class, "txt")
-        os.mknod(os.path.join(str(package_dir), java_file))
-        os.mknod(os.path.join(str(package_dir), some_file))
-        os.mknod(os.path.join(str(package_dir), some_dir, java_file))
-        os.mknod(os.path.join(str(package_dir), some_dir, some_file))
-        # make sure to provide full absolute path
-        java_classes.update({java_class: os.path.join(os.path.abspath(str(maven_sdl)), str(package_dir), java_file)})
-
-    explorer._add_package(str(package_dir))
+    explorer._add_package(relative_package_dir)
     assert synthetic_result[package_name] == explorer._packages[package_name]
 
 
@@ -127,28 +167,14 @@ def test_NotAMavenStandardDirectoryLayoutError_exception(explorer, tmpdir):
         explorer.get_project_structure()
 
 
-def test_get_project_structure(explorer, maven_sdl):
-    java_sources = os.path.join(os.path.abspath(str(maven_sdl)), "src", "main", "java")
-    pkg_one = os.path.join(java_sources, "com", "tuxnet", "p_one")
-    pkg_two = os.path.join(pkg_one, "p_two")
-    pkg_three = os.path.join(java_sources, "com", "tuxnet", "p_three")
-    pkgs = ["com.tuxnet.p_one", "com.tuxnet.p_one.p_two", "com.tuxnet.p_three"]
-
-    packages = {pkg: [pkg_one, pkg_two, pkg_three][i] for i, pkg in enumerate(pkgs)}
-    synthetic_result = {pkgs[0]: {}, pkgs[1]: {}, pkgs[2]: {}}
-    # for each package create sample .java files
-    for package_name, package_path in packages.items():
-        # necessary if com/tuxnet/p_one/p_two was created before com/tuxnet/p_one
-        try:
-            os.makedirs(package_path)
-        except FileExistsError:
-            pass
+def test_get_project_structure(explorer, maven_test_project):
+    synthetic_result = {maven_test_project.pkgs[0]: {}, maven_test_project.pkgs[1]: {}, maven_test_project.pkgs[2]: {}}
+    for package_name, package_path in maven_test_project.packages.items():
         package_classes = {}
-        for java_class in '12':
+        for java_class in maven_test_project.test_files_string:
             java_file = str("{}.{}").format(java_class, "java")
-            os.mknod(os.path.join(package_path, java_file))
-            package_classes.update({java_class: os.path.join(package_path, java_file)})
+            package_classes.update({java_class: os.path.join(os.path.abspath(package_path), java_file)})
         synthetic_result[package_name].update(package_classes)
 
-    explorer.project_dir = str(maven_sdl)
+    explorer.project_dir = str(maven_test_project.directory)
     assert explorer.get_project_structure() == synthetic_result
