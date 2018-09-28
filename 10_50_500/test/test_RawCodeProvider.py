@@ -35,3 +35,9 @@ def test_rm_trailing_newline():
     input_string = "this is how we do it\n\n\n"
     output_string = "this is how we do it"
     assert get_raw_code(input_string) == output_string
+
+
+def test_rm_oneline_asterisk_comments():
+    input_string = "/* don't worry */ be happy"
+    output_string = "be happy"
+    assert get_raw_code(input_string) == output_string
