@@ -41,3 +41,8 @@ def test_rm_oneline_asterisk_comments():
     input_string = "/* don't worry */ be happy"
     output_string = "be happy"
     assert get_raw_code(input_string) == output_string
+
+def test_rm_doubleslash_comments():
+    input_string = "// you talking to me?"
+    output_string = ""
+    assert get_raw_code(input_string) == output_string

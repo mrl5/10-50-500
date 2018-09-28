@@ -14,8 +14,8 @@ def get_raw_code(input_string):
     """
     # remove leading spaces
     line = re.sub(r'''
-        ^   # start of string
-        \s+ # one or more whitespaces
+        ^       # start of string
+        \s+     # one or more whitespaces
         ''', '', input_string, 0, re.VERBOSE)
 
     # remove trailing newlines
@@ -28,5 +28,13 @@ def get_raw_code(input_string):
         .*      # any character (except line break) zero or more times
         \*/     # "*/" string
         \s*     # zero or many whitespaces
+        ''', '', line, 0, re.VERBOSE)
+
+    # remove '//comments'
+    line = re.sub(r'''
+        ^       # start of string
+        //      # "//" string
+        .*      # any character (except line break) zero or more times
+        $       # end of string
         ''', '', line, 0, re.VERBOSE)
     return line
