@@ -41,6 +41,12 @@ class Explorer:
             self._packages.update(package)
 
     def get_project_structure(self):
+        """
+        :raises NotAMavenStandardDirectoryLayoutError: if a directory doesn't have Maven's "Standard Directory Layout" (src/main/java)
+        :raises FileNotFoundError: when a directory is requested but doesn't exist
+        :raises NotADirectoryError: when path leads to something which is not a directory
+        :return: dictionary with java packages and their content (names and paths to classes)
+        """
         if verify_directory_layout(self.project_dir):
             java_sources = os.path.join(self.project_dir, "src", "main", "java")
             # add packages to the set
