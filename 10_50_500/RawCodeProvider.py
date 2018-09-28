@@ -18,7 +18,7 @@ def get_raw_code(input_string):
         \s+     # one or more whitespaces
         ''', '', input_string, 0, re.VERBOSE)
 
-    # remove trailing newlines
+    # remove trailing newlines and whitespaces
     line = line.rstrip()
 
     # remove '/* comments */'

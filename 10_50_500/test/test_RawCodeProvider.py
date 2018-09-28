@@ -31,7 +31,7 @@ def test_rm_leadnig_spaces():
     assert get_raw_code(input_string) == output_string
 
 
-def test_rm_trailing_newline():
+def test_rm_trailing_newlines():
     input_string = "this is how we do it\n\n\n"
     output_string = "this is how we do it"
     assert get_raw_code(input_string) == output_string
@@ -42,7 +42,14 @@ def test_rm_oneline_asterisk_comments():
     output_string = "be happy"
     assert get_raw_code(input_string) == output_string
 
+
 def test_rm_doubleslash_comments():
     input_string = "// you talking to me?"
     output_string = ""
+    assert get_raw_code(input_string) == output_string
+
+
+def test_rm_trailing_whitespaces():
+    input_string = "high voltage rock'n'roll        "
+    output_string = "high voltage rock'n'roll"
     assert get_raw_code(input_string) == output_string
