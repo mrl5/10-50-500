@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 
 
 class Explorer:
@@ -10,6 +11,7 @@ class Explorer:
 
     def __init__(self, project_dir=os.getcwd()):
         self.project_dir = project_dir
+        self._packages = {}
 
 
 def verify_directory_layout(project_dir):
@@ -25,3 +27,17 @@ def verify_directory_layout(project_dir):
     maven_standard_directory_layout = os.path.join("src", "main", "java")
     path_to_analyse = os.path.join(project_dir, maven_standard_directory_layout)
     return os.path.exists(path_to_analyse)
+
+
+def get_package_name(relative_package_path):
+    """
+    :param relative_package_path: relative path to package (e.g. com/tuxnet/package)
+    :return: package name in accordance with Java packages naming convention
+    """
+    # //some/path//to/dir -> //some/path/to/dir
+    path = os.path.normpath(relative_package_path)
+    # //some/path/to/dir -> some/path/to/dir
+    path = re.sub("{}{}{}".format("^", os.sep, "+"), '', path)
+    # some/path/to/dir -> some.path.to.dir
+    package = re.sub(os.sep, '.', path)
+    return package
