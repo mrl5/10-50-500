@@ -13,7 +13,9 @@ class Explorer:
         """
         Custom exception
         """
-        pass
+        def __init__(self, **kwargs):
+            self.strerror = "Directory doesn't have Maven's Standard Directory Layout (src/main/java)"
+            self.filename = kwargs["filename"]
 
     def __init__(self, project_dir=os.getcwd()):
         self.project_dir = project_dir
@@ -54,8 +56,7 @@ class Explorer:
             for package in packages:
                 self._add_package(package)
         else:
-            raise self.NotAMavenStandardDirectoryLayoutError(
-                "{} directory doesn't have Maven's Standard Directory Layout (src/main/java)".format(self.project_dir))
+            raise self.NotAMavenStandardDirectoryLayoutError(filename=self.project_dir)
         return self._packages
 
 
@@ -87,3 +88,5 @@ def get_package_name(relative_package_path):
     # some/path/to/dir -> some.path.to.dir
     package = re.sub(os.sep, '.', path)
     return package
+
+
