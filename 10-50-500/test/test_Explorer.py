@@ -84,13 +84,15 @@ def test_multi_sep_package_name():
 
 
 # self._add_package
-def test_add_package(explorer, tmpdir):
-    package_dir = tmpdir.mkdir("com").mkdir("package")
+def test_add_package(explorer, maven_sdl):
+    # make sure that the cwd is relative
+    os.chdir(str(maven_sdl))
+    os.makedirs(os.path.join("com", "package", "some_dir"))
+    package_dir = os.path.join("com", "package")
+    package_name = "com.package"
     some_dir = "some_dir"
-    os.mkdir(os.path.join(str(package_dir), some_dir))
-    package_name = get_package_name(str(package_dir))
     java_classes = {}
-    test_item = {package_name: java_classes}
+    synthetic_result = {package_name: java_classes}
 
     for java_class in '12345':
         java_file = str("{}.{}").format(java_class, "java")
@@ -99,10 +101,11 @@ def test_add_package(explorer, tmpdir):
         os.mknod(os.path.join(str(package_dir), some_file))
         os.mknod(os.path.join(str(package_dir), some_dir, java_file))
         os.mknod(os.path.join(str(package_dir), some_dir, some_file))
-        java_classes.update({java_class: os.path.join(str(package_dir), java_file)})
+        # make sure to provide full absolute path
+        java_classes.update({java_class: os.path.join(os.path.abspath(str(maven_sdl)), str(package_dir), java_file)})
 
     explorer._add_package(str(package_dir))
-    assert test_item[package_name] == explorer._packages[package_name]
+    assert synthetic_result[package_name] == explorer._packages[package_name]
 
 
 def test_empty_package(explorer, tmpdir):
