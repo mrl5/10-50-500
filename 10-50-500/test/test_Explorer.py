@@ -44,13 +44,13 @@ def explorer():
 def test_correct_directory_layout(tmpdir):
     test_project = tmpdir.mkdir("test_project")
     os.makedirs(os.path.join(str(test_project), "src", "main", "java"))
-    assert verify_directory_layout(str(test_project)) == True
+    assert verify_directory_layout(str(test_project)) is True
 
 
 def test_false_directory_layout(tmpdir):
     test_project = tmpdir.mkdir("test_project")
     os.makedirs(os.path.join(str(test_project), "some", "random", "dir"))
-    assert verify_directory_layout(str(test_project)) == False
+    assert verify_directory_layout(str(test_project)) is False
 
 
 def test_path_doesnt_exist(tmpdir):
