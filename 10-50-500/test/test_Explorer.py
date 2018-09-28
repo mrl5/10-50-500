@@ -23,6 +23,8 @@ Scenario:
     
 4) test 'add_package' method:
     - method should add new item to the dictionary (named as package) with all filenames and full paths to the .java files
+    - only .java files from the first level should be added
+    - don't create dictionary for empty package
 
 5) test 'get_project_structure' method:
     - if project doesn't have "Standard Directory Layout": throw "NotAStandardDirectoryLayout" exception
@@ -76,3 +78,33 @@ def test_multi_sep_package_name():
     path_to_package = os.path.join(os.sep, "com", "tuxnet", "package")
     path = "{}{}".format(os.sep, path_to_package)
     assert get_package_name(path) == "com.tuxnet.package"
+
+
+# self.add_package
+def test_add_package(explorer, tmpdir):
+    package_dir = tmpdir.mkdir("com").mkdir("package")
+    some_dir = "some_dir"
+    os.mkdir(os.path.join(str(package_dir), some_dir))
+    package_name = get_package_name(str(package_dir))
+    java_classes = {}
+    test_item = {package_name: java_classes}
+    for java_class in '12345':
+        java_file = str("{}.{}").format(java_class, "java")
+        some_file = str("{}.{}").format(java_class, "txt")
+        os.mknod(os.path.join(str(package_dir), java_file))
+        os.mknod(os.path.join(str(package_dir), some_file))
+        os.mknod(os.path.join(str(package_dir), some_dir, java_file))
+        os.mknod(os.path.join(str(package_dir), some_dir, some_file))
+        java_classes.update({java_class: os.path.join(str(package_dir), java_file)})
+    explorer._add_package(str(package_dir))
+    assert test_item[package_name] == explorer._packages[package_name]
+
+
+def test_empty_package(explorer, tmpdir):
+    package_dir = tmpdir.mkdir("com").mkdir("package")
+    package_name = get_package_name(str(package_dir))
+    java_classes = {}
+    test_item = {package_name: java_classes}
+    explorer._add_package(str(package_dir))
+    with pytest.raises(KeyError):
+        print(explorer._packages[package_name])
