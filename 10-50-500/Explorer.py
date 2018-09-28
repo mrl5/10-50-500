@@ -3,19 +3,13 @@
 import os
 import re
 
+__author__ = "mrl5"
+
 
 class Explorer:
     """
     Class for Maven project exploration
     """
-
-    class NotAMavenStandardDirectoryLayoutError(Exception):
-        """
-        Custom exception
-        """
-        def __init__(self, **kwargs):
-            self.strerror = "Directory doesn't have Maven's Standard Directory Layout (src/main/java)"
-            self.filename = kwargs["filename"]
 
     def __init__(self, project_dir=os.getcwd()):
         self.project_dir = project_dir
@@ -64,6 +58,15 @@ class Explorer:
         else:
             raise self.NotAMavenStandardDirectoryLayoutError(filename=self.project_dir)
         return self._packages
+
+    class NotAMavenStandardDirectoryLayoutError(Exception):
+        """
+        Custom exception
+        """
+
+        def __init__(self, **kwargs):
+            self.strerror = "Directory doesn't have Maven's Standard Directory Layout (src/main/java)"
+            self.filename = kwargs["filename"]
 
 
 def verify_directory_layout(project_dir):
@@ -115,4 +118,5 @@ def main():
 
 if __name__ == "__main__":
     import sys
+
     main()
