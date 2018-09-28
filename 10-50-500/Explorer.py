@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# necessary if using Python2
-from __future__ import print_function
-
-__author__ = "mrl5"
-
 import os
 import re
 
@@ -13,151 +8,109 @@ class Explorer:
     """
     Class for Maven project exploration
     """
-    def __init__(self, project_dir):
+
+    class NotAMavenStandardDirectoryLayoutError(Exception):
+        """
+        Custom exception
+        """
+        def __init__(self, **kwargs):
+            self.strerror = "Directory doesn't have Maven's Standard Directory Layout (src/main/java)"
+            self.filename = kwargs["filename"]
+
+    def __init__(self, project_dir=os.getcwd()):
         self.project_dir = project_dir
-        self.dirs = ['src', 'main', 'java']
-        self.is_maven_project = False
-        try:
-            self.is_maven_project = self.verify_directory_layout(project_dir)
-            self.source_dir = ''
-            self.packages_dir = ''
-            self.packages = dict()
-            if self.is_maven_project:
-                source_dir = project_dir
-                for item in self.dirs:
-                    source_dir = os.path.join(source_dir, item)
-                self.source_dir = source_dir
-                self.packages_dir = find_packages(source_dir)
-        except FileNotFoundError as e:
-            print(e.strerror, e.filename, sep=': ')
-        except NotADirectoryError as e:
-            print(e.strerror, e.filename, sep=': ')
+        self._packages = {}
 
-    def verify_directory_layout(self, path):
+    def _add_package(self, path):
         """
-        Verifies if directory from path has Maven's "Standard Directory Layout" (src/main/java)
-        :param path: path to Maven project
-        :return: True if directory from path has Maven's "Standard Directory Layout"
+        Adds package and it's classes to the self._packages dictionary
+        :param path: relative path to package (e.g. com/tuxnet/package)
+        :raises FileNotFoundError: when a directory is requested but doesn't exist
+        :raises NotADirectoryError: when path leads to something which is not a directory
         """
-        errmsg = dict()
-        for (i, item) in enumerate(self.dirs):
-            if i == 0:
-                errmsg[item] = "There is no \"" + item + "/\" dir."
-            else:
-                # append "src/" with next dir => "src/item/"
-                errmsg[item] = re.sub(r'''
-                                (       # start of grouping
-                                [a-z]+  # match one or more small letters
-                                /       # "/" character
-                                )       # end of grouping
-                                \"      # ending with "
-                                ''', r'\1' + item + "/\"", errmsg[self.dirs[i - 1]], 0, re.VERBOSE)
-        # check for Standard Directory Layout
-        current_path = path
-        for item in self.dirs:
-            if find_dir(current_path, item):
-                current_path = os.path.join(current_path, item)
-            else:
-                print(errmsg[item])
-                # break loop, return False
-                return False
-        # return True if Maven's Standard Directory Layout
-        return True
-
-    def add_package(self, path):
-        """
-        Adds package and it's classes to the dictionary
-        :param path: path to package
-        :return: list with directories inside path
-        """
-        package_name = self.get_package_name(path)
-        classes = list()
-        directories = list()
+        package_classes = {}
         for item in os.listdir(path):
-            path_to_item = os.path.join(path, item)
-            if os.path.isfile(path_to_item) and item.endswith(".java"):
-                classes.append({item: path_to_item})
-            elif os.path.isdir(path_to_item):
-                directories.append(path_to_item)
-        if classes:
-            self.packages[package_name] = classes
-        return directories
-
-    def get_package_name(self, path):
-        """
-        :param path: path to package
-        :return: package name in accordance with Java packages naming convention
-        """
-        # get relative path to package
-        relative_path = path.split(self.source_dir)[1]
-        # remove first character (directory leftover)
-        relative_path = re.sub(r'''
-                            ^   # start of string
-                            .   # any character (only one)
-                            (   # start of grouping
-                            .+  # one or more characters
-                            $   # end of string
-                            )   # end of grouping
-                            ''', r'\1', relative_path, 0, re.VERBOSE)
-        # convert relative path into Java package name
-        package = re.sub('/', '.', relative_path, 0)
-        return package
+            path_to_item = os.path.join(os.path.abspath(path), item)
+            if os.path.isfile(path_to_item):
+                if os.path.basename(path_to_item).endswith(".java"):
+                    java_class = {os.path.splitext(os.path.basename(path_to_item))[0]: path_to_item}
+                    package_classes.update(java_class)
+        # update self._packages only if package has .java files
+        if bool(package_classes):
+            package = {get_package_name(path): package_classes}
+            self._packages.update(package)
 
     def get_project_structure(self):
         """
-        Creates a dictionary with packages and their classes ({package: [classes]})
-        :return:
+        :raises NotAMavenStandardDirectoryLayoutError: if a directory doesn't have Maven's "Standard Directory Layout" (src/main/java)
+        :raises FileNotFoundError: when a directory is requested but doesn't exist
+        :raises NotADirectoryError: when path leads to something which is not a directory
+        :return: dictionary with java packages and their content (names and paths to classes)
         """
-        if not self.is_maven_project:
-            print("Given path doesn't point to the Maven project:", self.project_dir)
+        if verify_directory_layout(self.project_dir):
+            java_sources = os.path.join(self.project_dir, "src", "main", "java")
+            # add packages to the set
+            packages = set()
+            for root, dirs, files in os.walk(java_sources, topdown=False):
+                for file in files:
+                    package = re.sub("{}{}".format("^", java_sources), '', root)
+                    # //com/some/package -> com/some/package
+                    package = re.sub("{}{}{}".format("^", os.sep, "+"), '', package)
+                    packages.add(package)
+            os.chdir(java_sources)
+            # create dictionary of project
+            for package in packages:
+                self._add_package(package)
         else:
-            paths_to_explore = list()
-            for item in os.listdir(self.packages_dir):
-                path_to_item = os.path.join(self.packages_dir, item)
-                if os.path.isdir(path_to_item):
-                    paths_to_explore.append(path_to_item)
-            while len(paths_to_explore) > 0:
-                paths_to_explore += self.add_package(paths_to_explore.pop(0))
+            raise self.NotAMavenStandardDirectoryLayoutError(filename=self.project_dir)
+        return self._packages
 
 
-def find_packages(path):
+def verify_directory_layout(project_dir):
     """
-    Searches for packages in given path
-    :param path: path to dir which will be explored
-    :return: path where java packages are located
+    Verifies if directory from path has Maven's "Standard Directory Layout" (src/main/java)
+
+    :param project_dir: path to the project
+    :raises FileNotFoundError: when a directory is requested but doesn't exist
+    :raises NotADirectoryError: when path leads to something which is not a directory
+    :return: True if directory from path has Maven's "Standard Directory Layout"; else False
     """
-    packages_dir = path
-    while len(os.listdir(packages_dir)) == 1:
-        packages_dir = os.path.join(packages_dir, os.listdir(packages_dir)[0])
-    return packages_dir
+    # throws exceptions if directory doesn't exist
+    os.chdir(project_dir)
+    maven_standard_directory_layout = os.path.join("src", "main", "java")
+    path_to_analyse = os.path.join(project_dir, maven_standard_directory_layout)
+    return os.path.exists(path_to_analyse)
 
 
-def find_dir(path, directory):
+def get_package_name(relative_package_path):
     """
-    Searches for directory in given path
-    :param path: path to main directory
-    :param directory: name of searched directory
-    :return: True if directory was found in path
+    :param relative_package_path: relative path to package (e.g. com/tuxnet/package)
+    :return: package name in accordance with Java packages naming convention
     """
-    for item in os.listdir(path):
-        if item == directory and os.path.isdir(
-                os.path.join(path, item)):
-            return True
+    # //some/path//to/dir -> //some/path/to/dir
+    path = os.path.normpath(relative_package_path)
+    # //some/path/to/dir -> some/path/to/dir
+    path = re.sub("{}{}{}".format("^", os.sep, "+"), '', path)
+    # some/path/to/dir -> some.path.to.dir
+    package = re.sub(os.sep, '.', path)
+    return package
 
 
 def main():
     project_dir = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    e = Explorer(project_dir)
-
-    if not e.is_maven_project:
-        print("Exiting with error")
-    else:
-        e.get_project_structure()
-        for package, files in sorted(e.packages.items()):
+    explorer = Explorer(project_dir)
+    try:
+        explorer.get_project_structure()
+        for package, files in sorted(explorer._packages.items()):
             print("\n", package, ":", sep='')
-            for dictionary in files:
-                for key, value in dictionary.items():
-                    print("\t" + key)
+            for key, value in sorted(files.items()):
+                print("\t" + key)
+    except FileNotFoundError as e:
+        print(e.strerror, e.filename, sep=': ')
+    except NotADirectoryError as e:
+        print(e.strerror, e.filename, sep=': ')
+    except Explorer.NotAMavenStandardDirectoryLayoutError as e:
+        print(e.strerror, e.filename, sep=': ')
 
 
 if __name__ == "__main__":
