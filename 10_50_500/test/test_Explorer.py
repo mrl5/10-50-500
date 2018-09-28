@@ -30,7 +30,7 @@ Scenario:
 5) test 'get_project_structure' method:
     - if project doesn't have "Standard Directory Layout": throw "NotAMavenStandardDirectoryLayoutError" exception
     - don't handle 'verify_directory_layout' exceptions
-    - if "Standard Directory Layout": retunr 'self._packages' dictionary with structure "{package: {class: path/to/class}}"
+    - if "Standard Directory Layout": return 'self._packages' dictionary with structure "{package: {class: path/to/class}}"
 """
 
 
@@ -133,7 +133,6 @@ def test_add_package(explorer, maven_test_project):
     package_name = maven_test_project.pkgs[0]
     package_dir = maven_test_project.packages[package_name]
     relative_package_dir = re.sub("{}{}{}".format("^", maven_test_project.java_sources, os.sep), '', package_dir)
-
     java_classes = {}
     synthetic_result = {package_name: java_classes}
     for item in os.listdir(relative_package_dir):
@@ -143,7 +142,6 @@ def test_add_package(explorer, maven_test_project):
             # make sure to provide full absolute path
             abs_path_to_class = os.path.join(os.path.abspath(maven_test_project.java_sources), relative_package_dir, item)
             java_classes.update({java_class: abs_path_to_class})
-
     explorer._add_package(relative_package_dir)
     assert synthetic_result[package_name] == explorer._packages[package_name]
 
@@ -151,7 +149,6 @@ def test_add_package(explorer, maven_test_project):
 def test_empty_package(explorer, tmpdir):
     package_dir = tmpdir.mkdir("com").mkdir("package")
     package_name = get_package_name(str(package_dir))
-
     explorer._add_package(str(package_dir))
     with pytest.raises(KeyError):
         print(explorer._packages[package_name])
@@ -161,7 +158,6 @@ def test_empty_package(explorer, tmpdir):
 def test_NotAMavenStandardDirectoryLayoutError_exception(explorer, tmpdir):
     test_project = tmpdir.mkdir("test_project")
     os.makedirs(os.path.join(str(test_project), "some", "random", "dir"))
-
     explorer.project_dir = str(test_project)
     with pytest.raises(explorer.NotAMavenStandardDirectoryLayoutError):
         explorer.get_project_structure()
@@ -175,6 +171,5 @@ def test_get_project_structure(explorer, maven_test_project):
             java_file = str("{}.{}").format(java_class, "java")
             package_classes.update({java_class: os.path.join(os.path.abspath(package_path), java_file)})
         synthetic_result[package_name].update(package_classes)
-
     explorer.project_dir = str(maven_test_project.directory)
     assert explorer.get_project_structure() == synthetic_result
