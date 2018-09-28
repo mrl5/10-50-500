@@ -96,3 +96,23 @@ def get_package_name(relative_package_path):
     return package
 
 
+def main():
+    project_dir = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
+    explorer = Explorer(project_dir)
+    try:
+        explorer.get_project_structure()
+        for package, files in sorted(explorer._packages.items()):
+            print("\n", package, ":", sep='')
+            for key, value in sorted(files.items()):
+                print("\t" + key)
+    except FileNotFoundError as e:
+        print(e.strerror, e.filename, sep=': ')
+    except NotADirectoryError as e:
+        print(e.strerror, e.filename, sep=': ')
+    except Explorer.NotAMavenStandardDirectoryLayoutError as e:
+        print(e.strerror, e.filename, sep=': ')
+
+
+if __name__ == "__main__":
+    import sys
+    main()
