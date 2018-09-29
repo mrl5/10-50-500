@@ -42,6 +42,8 @@ class PrettyPrinter:
         :return: list with pretty-formatted code
         """
         self._verify_code_list()
+        formatted_code = []
+        return formatted_code
 
     class CodeWithIndentationError(Exception):
         """

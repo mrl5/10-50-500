@@ -12,6 +12,7 @@ Scenario:
     - raise TypeError if 'self.unformatted_code_list' was not assigned
     - raise TypeError if 'self.unformatted_code_list' is not a list
     - 'CodeWithIndentationError' custom exception if 'self.unformatted_code_list' has items with leading whitespaces
+    - 'PrettyPrinter.format_code()' method returns a list
     - "something {"
     - "}" or "} else"
     - "} catch (NullPointerException e) {"
@@ -56,6 +57,7 @@ def raw_java_code():
     source_code.append("}")
     source_code.append("}")
     source_code.append("}")
+    return source_code
 
 
 @pytest.fixture(scope="function")
@@ -158,3 +160,8 @@ def test_CodeWithIndentationError_spaces(pretty_printer):
     pretty_printer.unformatted_code_list = input_list
     with pytest.raises(PrettyPrinter.CodeWithIndentationError):
         pretty_printer.format_code()
+
+
+def test_format_code_returns_list(pretty_printer):
+    pretty_printer.unformatted_code_list = ["just a test"]
+    assert isinstance(pretty_printer.format_code(), list)
