@@ -18,9 +18,8 @@ class Explorer:
     def _add_package(self, path):
         """
         Adds package and it's classes to the self._packages dictionary
+
         :param path: relative path to package (e.g. com/tuxnet/package)
-        :raises FileNotFoundError: when a directory is requested but doesn't exist
-        :raises NotADirectoryError: when path leads to something which is not a directory
         """
         package_classes = {}
         for item in os.listdir(path):
@@ -37,8 +36,6 @@ class Explorer:
     def get_project_structure(self):
         """
         :raises NotAMavenStandardDirectoryLayoutError: if a directory doesn't have Maven's "Standard Directory Layout" (src/main/java)
-        :raises FileNotFoundError: when a directory is requested but doesn't exist
-        :raises NotADirectoryError: when path leads to something which is not a directory
         :return: dictionary with java packages and their content (names and paths to classes)
         """
         if verify_directory_layout(self.project_dir):
@@ -78,8 +75,13 @@ def verify_directory_layout(project_dir):
     :raises NotADirectoryError: when path leads to something which is not a directory
     :return: True if directory from path has Maven's "Standard Directory Layout"; else False
     """
-    # throws exceptions if directory doesn't exist
-    os.chdir(project_dir)
+    try:
+        os.chdir(project_dir)
+    except FileNotFoundError as fnfe:
+        raise fnfe
+    except NotADirectoryError as nade:
+        raise nade
+
     maven_standard_directory_layout = os.path.join("src", "main", "java")
     path_to_analyse = os.path.join(project_dir, maven_standard_directory_layout)
     return os.path.exists(path_to_analyse)
