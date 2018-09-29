@@ -241,9 +241,18 @@ def test_linebreak(pretty_printer, raw_java_code, tabbed_java_code):
     assert pretty_printer.format_code() == tabbed_java_code
 
 
+def test_close_and_open_brackets_in_one_line(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    stop = 16
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
+    pretty_printer.unformatted_code_list = raw_java_code
+    assert pretty_printer.format_code() == tabbed_java_code
+
+
 def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    stop = 17
+    stop = 18
     raw_java_code = raw_java_code[0:stop]
     tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
@@ -252,7 +261,7 @@ def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, tabbed_jav
 
 def test_brackets_inside_single_quotes(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    stop = 20
+    stop = 21
     raw_java_code = raw_java_code[0:stop]
     tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
