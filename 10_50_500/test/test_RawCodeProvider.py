@@ -13,6 +13,7 @@ Scenario:
     - remove trailing newline
     - remove '/* comments */'
     - remove '//comments'
+    - don't modify lines like "string //comment"
     - remove trailing whitespaces
     - remove empty lines
     - remove multi-line comments (/*\n\n\n*/)
@@ -66,11 +67,20 @@ def test_rm_oneline_asterisk_comments(directory):
     assert get_raw_code(file) == output_list
 
 
-def test_rm_doubleslash_comments(directory):
+def test_rm_leading_doubleslash_comments(directory):
     test_dir = directory
     file = os.path.join(str(test_dir), "file.txt")
     input_list = ["// you talking to me?"]
     output_list = []
+    write_to_file(file, input_list)
+    assert get_raw_code(file) == output_list
+
+
+def test_leave_doubleslash_comments_inside_line(directory):
+    test_dir = directory
+    file = os.path.join(str(test_dir), "file.txt")
+    input_list = ["And God said, Let there be light: and there was light. // for more info check Maxwell's equations"]
+    output_list = ["And God said, Let there be light: and there was light. // for more info check Maxwell's equations"]
     write_to_file(file, input_list)
     assert get_raw_code(file) == output_list
 
