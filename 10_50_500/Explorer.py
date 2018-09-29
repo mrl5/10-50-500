@@ -58,7 +58,7 @@ class Explorer:
 
     class NotAMavenStandardDirectoryLayoutError(Exception):
         """
-        Custom exception
+        Custom exception for a directory which doesn't have Maven's "Standard Directory Layout" (src/main/java)
         """
 
         def __init__(self, **kwargs):
