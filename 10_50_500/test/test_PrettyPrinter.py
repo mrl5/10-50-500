@@ -18,13 +18,13 @@ Scenario:
     - "}"
     - line break: "} else" or "sth.toString()
                                         .toString();"
-    - omit { and } if inside ("" or ''
-    - ugly formatted code: "}}"
-    - ugly formatted code: "{{"
     - "} catch (NullPointerException e) {"
+    - omit { and } if inside ("" or ''
     - "case:"
     - "object.method().method().method;"
-    - compare with stripped .java file
+    - ugly formatted code: "}}"
+    - ugly formatted code: "{{"
+    - multiple brackets inside double and single quotes
 """
 
 
@@ -52,11 +52,9 @@ def raw_java_code():
     source_code.append("try {")
     source_code.append("bash.quiet(\"ping www.github.com\");")
     source_code.append("} catch (NullPointerException e) {")
+    source_code.append("System.err.println(\"test\");")
     source_code.append("System.err.println(\"{we {{ are doomed {{{{\");")
     source_code.append("System.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
-    source_code.append("System.err.println(\"{{{{ its\" + \"{{{{{{{over{{{{{{{{{{{{{{{ {{\");")
-    source_code.append(
-        "System.err.println(\"there}}}}}}}}}}}}}}}}}}\" + \"}}} is\"+ \"}}}}}}}}}}}}no}} hope}}}}}}}}}}}}}}}}}}\");")
     source_code.append("System.err.println('{' + '{' + '{' + '{');")
     source_code.append(
         "System.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
@@ -93,11 +91,9 @@ def tabbed_java_code():
     source_code.append("\t\ttry {")
     source_code.append("\t\t\tbash.quiet(\"ping www.github.com\");")
     source_code.append("\t\t} catch (NullPointerException e) {")
+    source_code.append("\t\t\tSystem.err.println(\"test\");")
     source_code.append("\t\t\tSystem.err.println(\"{we {{ are doomed {{{{\");")
     source_code.append("\t\t\tSystem.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
-    source_code.append("\t\t\tSystem.err.println(\"{{{{ its\" + \"{{{{{{{over{{{{{{{{{{{{{{{ {{\");")
-    source_code.append(
-        "\t\t\tSystem.err.println(\"there}}}}}}}}}}}}}}}}}}\" + \"}}} is\"+ \"}}}}}}}}}}}}no}} hope}}}}}}}}}}}}}}}}}}\");")
     source_code.append("\t\t\tSystem.err.println('{' + '{' + '{' + '{');")
     source_code.append(
         "\t\t\tSystem.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
@@ -134,11 +130,9 @@ def fourspaced_java_code():
     source_code.append("        try {")
     source_code.append("            bash.quiet(\"ping www.github.com\");")
     source_code.append("        } catch (NullPointerException e) {")
+    source_code.append("            System.err.println(\"test\");")
     source_code.append("            System.err.println(\"{we {{ are doomed {{{{\");")
     source_code.append("            System.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
-    source_code.append("            System.err.println(\"{{{{ its\" + \"{{{{{{{over{{{{{{{{{{{{{{{ {{\");")
-    source_code.append(
-        "            System.err.println(\"there}}}}}}}}}}}}}}}}}}\" + \"}}} is\"+ \"}}}}}}}}}}}}no}} hope}}}}}}}}}}}}}}}}}}\");")
     source_code.append("            System.err.println('{' + '{' + '{' + '{');")
     source_code.append(
         "            System.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
