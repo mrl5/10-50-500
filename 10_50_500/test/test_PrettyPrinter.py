@@ -15,8 +15,12 @@ Scenario:
     - 'CodeWithTrailingWhitespacesError' custom exception if 'self.unformatted_code_list' has items with trailing whitespaces
     - 'PrettyPrinter.format_code()' method returns a list
     - "something {"
-    - "}" or "} else"
-    - "}}" ugly formatted code
+    - "}"
+    - line break: "} else" or "sth.toString()
+                                        .toString();"
+    - ugly formatted code: "}}"
+    - ugly formatted code: "{{"
+    - omit { and } if inside ("" or ''
     - "} catch (NullPointerException e) {"
     - "case:"
     - "object.method().method().method;"
@@ -191,16 +195,30 @@ def test_format_code_returns_list(pretty_printer):
 
 def test_openbracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    raw_java_code = raw_java_code[0:3]
-    tabbed_java_code = tabbed_java_code[0:3]
+    start = 0
+    stop = 3
+    raw_java_code = raw_java_code[start:stop]
+    tabbed_java_code = tabbed_java_code[start:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
 
 def test_closebracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    raw_java_code = raw_java_code[0:10]
-    tabbed_java_code = tabbed_java_code[0:10]
+    start = 0
+    stop = 10
+    raw_java_code = raw_java_code[start:stop]
+    tabbed_java_code = tabbed_java_code[start:stop]
+    pretty_printer.unformatted_code_list = raw_java_code
+    assert pretty_printer.format_code() == tabbed_java_code
+
+
+def test_linebreak(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    start = 0
+    stop = 12
+    raw_java_code = raw_java_code[start:stop]
+    tabbed_java_code = tabbed_java_code[start:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
