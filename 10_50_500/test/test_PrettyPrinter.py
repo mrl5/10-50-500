@@ -4,11 +4,13 @@ import pytest
 
 __author__ = "mrl5"
 
-from PrettyPrinter import pretty_print
+from PrettyPrinter import PrettyPrinter
 
 """
 Scenario:
-    - test if param is list
+    - raise ValueError if 'self.unformatted_code_list' is an empty list
+    - raise TypeError if 'self.unformatted_code_list' was not assigned
+    - raise TypeError if 'self.unformatted_code_list' is not a list
     - "something {"
     - "}" or "} else"
     - "} catch (NullPointerException e) {"
@@ -16,7 +18,25 @@ Scenario:
 """
 
 
-def test_exception_when_param_not_list():
-    a_dict = {}
+@pytest.fixture(scope="function")
+def pretty_printer():
+    pp = PrettyPrinter()
+    return pp
+
+
+def test_ValueError_when_empty_list(pretty_printer):
+    pretty_printer.unformatted_code_list = []
+    with pytest.raises(ValueError):
+        pretty_printer.format_code()
+
+
+def test_TypeError_when_field_not_assigned(pretty_printer):
     with pytest.raises(TypeError):
-        pretty_print(a_dict)
+        pretty_printer.format_code()
+
+
+def test_TypeError_when_field_not_a_list(pretty_printer):
+    a_dict = {}
+    pretty_printer.unformatted_code_list = a_dict
+    with pytest.raises(TypeError):
+        pretty_printer.format_code()
