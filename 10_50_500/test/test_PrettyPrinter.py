@@ -306,14 +306,8 @@ def test_switch_case_default_break(pretty_printer, raw_java_code, tabbed_java_co
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
-@pytest.mark.skip
+
 def test_fourspaced_indent(pretty_printer, raw_java_code, fourspaced_java_code):
     pretty_printer.indentation = "    "
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == fourspaced_java_code
-
-@pytest.mark.skip
-def test_tabbed_indent(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
