@@ -61,11 +61,15 @@ def raw_java_code():
     source_code.append("}")
     source_code.append("switch (test) {")
     source_code.append("case 0:")
+    source_code.append("String test = \"something something\";")
+    source_code.append("String s = test.toString();")
+    source_code.append("break;")
+    source_code.append("case 1:")
     source_code.append("boolean worked = test.toString()")
     source_code.append(".endsWith(\"1\");")
     source_code.append("break;")
-    source_code.append("case 1:")
-    source_code.append("String s = test.toString();")
+    source_code.append("default:")
+    source_code.append("String test = \"right\";")
     source_code.append("break;")
     source_code.append("}")
     source_code.append("}")
@@ -100,11 +104,15 @@ def tabbed_java_code():
     source_code.append("\t\t}")
     source_code.append("\t\tswitch (test) {")
     source_code.append("\t\t\tcase 0:")
+    source_code.append("\t\t\t\tString test = \"something something\";")
+    source_code.append("\t\t\t\tString s = test.toString();")
+    source_code.append("\t\t\t\tbreak;")
+    source_code.append("\t\t\tcase 1:")
     source_code.append("\t\t\t\tboolean worked = test.toString()")
     source_code.append("\t\t\t\t\t\t.endsWith(\"1\");")
     source_code.append("\t\t\t\tbreak;")
-    source_code.append("\t\t\tcase 1:")
-    source_code.append("\t\t\t\tString s = test.toString();")
+    source_code.append("\t\t\tdefault:")
+    source_code.append("\t\t\t\tString test = \"right\";")
     source_code.append("\t\t\t\tbreak;")
     source_code.append("\t\t}")
     source_code.append("\t}")
@@ -139,11 +147,15 @@ def fourspaced_java_code():
     source_code.append("        }")
     source_code.append("        switch (test) {")
     source_code.append("            case 0:")
+    source_code.append("                String test = \"something something\";")
+    source_code.append("                String s = test.toString();")
+    source_code.append("                break;")
+    source_code.append("            case 1:")
     source_code.append("                boolean worked = test.toString()")
     source_code.append("                        .endsWith(\"1\");")
     source_code.append("                break;")
-    source_code.append("            case 1:")
-    source_code.append("                String s = test.toString();")
+    source_code.append("            default:")
+    source_code.append("                String test = \"right\";")
     source_code.append("                break;")
     source_code.append("        }")
     source_code.append("    }")
@@ -262,6 +274,15 @@ def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, tabbed_jav
 def test_brackets_inside_single_quotes(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
     stop = 21
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
+    pretty_printer.unformatted_code_list = raw_java_code
+    assert pretty_printer.format_code() == tabbed_java_code
+
+
+def test_case_indent(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    stop = 25
     raw_java_code = raw_java_code[0:stop]
     tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
