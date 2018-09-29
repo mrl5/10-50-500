@@ -14,3 +14,9 @@ Scenario:
     - "} catch (NullPointerException e) {"
     - compare with stripped .java file
 """
+
+
+def test_exception_when_param_not_list():
+    a_dict = {}
+    with pytest.raises(TypeError):
+        pretty_print(a_dict)
