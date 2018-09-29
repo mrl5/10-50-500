@@ -22,6 +22,9 @@ Scenario:
     - omit { and } if inside ("" or ''
     - "case:"
     - "object.method().method().method;"
+    - full .java source code
+    
+ToDo:
     - ugly formatted code: "}}"
     - ugly formatted code: "{{"
     - multiple brackets inside double and single quotes
