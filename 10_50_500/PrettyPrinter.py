@@ -53,12 +53,12 @@ class PrettyPrinter:
         end_of_line_break = False
         # "{" or "case sth:"
         nest_regex_pattern = "({|\s*case\s+.*?:\s*$)"
-        # "}" or "break;"
-        unnest_regex_pattern = "(\}|\s*break;)"
+        indent_break_regex_pattern = "(\s*break;)"
         for row in self.unformatted_code_list:
             line = str(row)
             # if line doesn't end with "{" or "}" or ";" then it's line break
             line_break = True if not re.search(".*[{};:]$", line) else False
+            indent_break = re.search(indent_break_regex_pattern, re.sub("[\"\'].*?[\"\']", '', line))
             wait_for_next_line = True if re.search(nest_regex_pattern,
                                                    re.sub("[\"\'].*?[\"\']", '', line)) or line_break else False
 
@@ -68,7 +68,7 @@ class PrettyPrinter:
                                                     .*?     # any char zero or more times - "?" forces shortest matches!
                                                     [\"\']  # match any single character (double quote or single quote)
                                                     ''', '', line, 0, re.VERBOSE)))
-            nest_lvl -= len(re.findall(unnest_regex_pattern, re.sub("[\"\'].*?[\"\']", '', line)))
+            nest_lvl -= len(re.findall("}", re.sub("[\"\'].*?[\"\']", '', line)))
             # add nesting on line break
             nest_lvl += 1 if line_break else 0
 
@@ -77,6 +77,7 @@ class PrettyPrinter:
             formatted_line = indent + line
             formatted_code.append(formatted_line)
             # retrieve normal nest level
+            nest_lvl -= 1 if indent_break else 0
             nest_lvl -= 1 if end_of_line_break else 0
             end_of_line_break = line_break
             # debug
