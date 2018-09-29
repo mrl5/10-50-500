@@ -33,6 +33,12 @@ class PrettyPrinter:
         indent_lines = list(filter(None.__ne__, indent_lines))
         if indent_lines:
             raise self.CodeWithIndentationError(indent_lines_list=indent_lines)
+        # list with numbers of lines with trailing whitespaces
+        trailing_whitespaces_lines = [i + 1 if re.match(".*\s+$", line) else None for i, line in
+                                      enumerate(self.unformatted_code_list)]
+        trailing_whitespaces_lines = list(filter(None.__ne__, trailing_whitespaces_lines))
+        if trailing_whitespaces_lines:
+            raise self.CodeWithTrailingWhitespacesError(trailing_whitespaces_lines_list=trailing_whitespaces_lines)
 
     def format_code(self):
         """
@@ -49,6 +55,16 @@ class PrettyPrinter:
         """
         Custom exception for code with an indentation
         """
+
         def __init__(self, **kwargs):
             self.strerror = "Sourcecode contains lines with an indentation"
             self.indent_lines_list = kwargs["indent_lines_list"]
+
+    class CodeWithTrailingWhitespacesError(Exception):
+        """
+        Custom exception for code with trailing whitespaces
+        """
+
+        def __init__(self, **kwargs):
+            self.strerror = "Sourcecode contains lines with trailing whitespaces"
+            self.trailing_whitespaces_lines_list = kwargs["trailing_whitespaces_lines_list"]

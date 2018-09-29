@@ -12,9 +12,11 @@ Scenario:
     - raise TypeError if 'self.unformatted_code_list' was not assigned
     - raise TypeError if 'self.unformatted_code_list' is not a list
     - 'CodeWithIndentationError' custom exception if 'self.unformatted_code_list' has items with leading whitespaces
+    - 'CodeWithTrailingWhitespacesError' custom exception if 'self.unformatted_code_list' has items with trailing whitespaces
     - 'PrettyPrinter.format_code()' method returns a list
     - "something {"
     - "}" or "} else"
+    - "}}" ugly formatted code
     - "} catch (NullPointerException e) {"
     - "case:"
     - "object.method().method().method;"
@@ -159,6 +161,26 @@ def test_CodeWithIndentationError_spaces(pretty_printer):
     input_list.append("        code")
     pretty_printer.unformatted_code_list = input_list
     with pytest.raises(PrettyPrinter.CodeWithIndentationError):
+        pretty_printer.format_code()
+
+
+def test_CodeWithTrailingWhitespacesError_tabs(pretty_printer):
+    input_list = []
+    input_list.append("blocks")
+    input_list.append("of\t")
+    input_list.append("code")
+    pretty_printer.unformatted_code_list = input_list
+    with pytest.raises(PrettyPrinter.CodeWithTrailingWhitespacesError):
+        pretty_printer.format_code()
+
+
+def test_CodeWithTrailingWhitespacesError_spaces(pretty_printer):
+    input_list = []
+    input_list.append("blocks")
+    input_list.append("of ")
+    input_list.append("code")
+    pretty_printer.unformatted_code_list = input_list
+    with pytest.raises(PrettyPrinter.CodeWithTrailingWhitespacesError):
         pretty_printer.format_code()
 
 
