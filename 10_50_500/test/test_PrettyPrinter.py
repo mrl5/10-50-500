@@ -18,9 +18,9 @@ Scenario:
     - "}"
     - line break: "} else" or "sth.toString()
                                         .toString();"
+    - omit { and } if inside ("" or ''
     - ugly formatted code: "}}"
     - ugly formatted code: "{{"
-    - omit { and } if inside ("" or ''
     - "} catch (NullPointerException e) {"
     - "case:"
     - "object.method().method().method;"
@@ -52,7 +52,14 @@ def raw_java_code():
     source_code.append("try {")
     source_code.append("bash.quiet(\"ping www.github.com\");")
     source_code.append("} catch (NullPointerException e) {")
-    source_code.append("System.err.println(\"we are doomed\");")
+    source_code.append("System.err.println(\"{we {{ are doomed {{{{\");")
+    source_code.append("System.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
+    source_code.append("System.err.println(\"{{{{ its\" + \"{{{{{{{over{{{{{{{{{{{{{{{ {{\");")
+    source_code.append(
+        "System.err.println(\"there}}}}}}}}}}}}}}}}}}\" + \"}}} is\"+ \"}}}}}}}}}}}}no}} hope}}}}}}}}}}}}}}}}}}\");")
+    source_code.append("System.err.println('{' + '{' + '{' + '{');")
+    source_code.append(
+        "System.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
     source_code.append("}")
     source_code.append("switch (test) {")
     source_code.append("case 0:")
@@ -86,7 +93,14 @@ def tabbed_java_code():
     source_code.append("\t\ttry {")
     source_code.append("\t\t\tbash.quiet(\"ping www.github.com\");")
     source_code.append("\t\t} catch (NullPointerException e) {")
-    source_code.append("\t\t\tSystem.err.println(\"we are doomed\");")
+    source_code.append("\t\t\tSystem.err.println(\"{we {{ are doomed {{{{\");")
+    source_code.append("\t\t\tSystem.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
+    source_code.append("\t\t\tSystem.err.println(\"{{{{ its\" + \"{{{{{{{over{{{{{{{{{{{{{{{ {{\");")
+    source_code.append(
+        "\t\t\tSystem.err.println(\"there}}}}}}}}}}}}}}}}}}\" + \"}}} is\"+ \"}}}}}}}}}}}}no}} hope}}}}}}}}}}}}}}}}}}\");")
+    source_code.append("\t\t\tSystem.err.println('{' + '{' + '{' + '{');")
+    source_code.append(
+        "\t\t\tSystem.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
     source_code.append("\t\t}")
     source_code.append("\t\tswitch (test) {")
     source_code.append("\t\t\tcase 0:")
@@ -120,7 +134,14 @@ def fourspaced_java_code():
     source_code.append("        try {")
     source_code.append("            bash.quiet(\"ping www.github.com\");")
     source_code.append("        } catch (NullPointerException e) {")
-    source_code.append("            System.err.println(\"we are doomed\");")
+    source_code.append("            System.err.println(\"{we {{ are doomed {{{{\");")
+    source_code.append("            System.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
+    source_code.append("            System.err.println(\"{{{{ its\" + \"{{{{{{{over{{{{{{{{{{{{{{{ {{\");")
+    source_code.append(
+        "            System.err.println(\"there}}}}}}}}}}}}}}}}}}\" + \"}}} is\"+ \"}}}}}}}}}}}}no}} hope}}}}}}}}}}}}}}}}}}\");")
+    source_code.append("            System.err.println('{' + '{' + '{' + '{');")
+    source_code.append(
+        "            System.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
     source_code.append("        }")
     source_code.append("        switch (test) {")
     source_code.append("            case 0:")
