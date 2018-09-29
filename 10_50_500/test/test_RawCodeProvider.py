@@ -9,7 +9,7 @@ __author__ = "mrl5"
 """
 Scenario:
 1. get_raw_code
-    - remove spaces from the beginning of the line
+    - remove whitespaces from the beginning of the line
     - remove trailing newline
     - remove '/* comments */'
     - remove '//comments'
@@ -40,11 +40,11 @@ def write_to_file(file, input_list):
             f.write(str(item) + "\n")
 
 
-def test_rm_leadnig_spaces(directory):
+def test_rm_leadnig_whitespaces(directory):
     test_dir = directory
     file = os.path.join(str(test_dir), "file.txt")
-    input_list = ["    never ending story"]
-    output_list = ["never ending story"]
+    input_list = ["\tTabs versus Spaces:", "    An Eternal Holy War"]
+    output_list = ["Tabs versus Spaces:", "An Eternal Holy War"]
     write_to_file(file, input_list)
     assert get_raw_code(file) == output_list
 
