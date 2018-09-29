@@ -50,11 +50,19 @@ class PrettyPrinter:
         self._verify_code_list()
         formatted_code = []
         nest_lvl = 0
+        wait_for_next_line = False
         openbracket = "{"
         closebracket = "}"
         for line in self.unformatted_code_list:
-            formatted_code.append(nest_lvl * self.indentation + line)
-            nest_lvl += 1 if line.endswith(openbracket) else False
+            if line.endswith(openbracket):
+                nest_lvl += 1
+                wait_for_next_line = True
+            if line.startswith(closebracket):
+                nest_lvl -= 1
+                wait_for_next_line = False
+            formatted_code.append(nest_lvl * self.indentation + line if not wait_for_next_line
+                                  else (nest_lvl - 1) * self.indentation + line)
+            wait_for_next_line = False
         return formatted_code
 
     class CodeWithIndentationError(Exception):

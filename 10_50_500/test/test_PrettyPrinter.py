@@ -195,3 +195,23 @@ def test_openbracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
     tabbed_java_code = tabbed_java_code[0:3]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
+
+
+def test_closebracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    raw_java_code = raw_java_code[0:10]
+    tabbed_java_code = tabbed_java_code[0:10]
+    pretty_printer.unformatted_code_list = raw_java_code
+    assert pretty_printer.format_code() == tabbed_java_code
+
+
+@pytest.mark.skip
+def test_fourspaced_indent(pretty_printer, raw_java_code, fourspaced_java_code):
+    pretty_printer.indentation = "    "
+    assert pretty_printer.format_code(raw_java_code) == fourspaced_java_code
+
+
+@pytest.mark.skip
+def test_tabbed_indent(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    assert pretty_printer.format_code(raw_java_code) == tabbed_java_code
