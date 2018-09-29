@@ -187,3 +187,11 @@ def test_CodeWithTrailingWhitespacesError_spaces(pretty_printer):
 def test_format_code_returns_list(pretty_printer):
     pretty_printer.unformatted_code_list = ["just a test"]
     assert isinstance(pretty_printer.format_code(), list)
+
+
+def test_openbracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    raw_java_code = raw_java_code[0:3]
+    tabbed_java_code = tabbed_java_code[0:3]
+    pretty_printer.unformatted_code_list = raw_java_code
+    assert pretty_printer.format_code() == tabbed_java_code
