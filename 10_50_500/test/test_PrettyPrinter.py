@@ -222,50 +222,45 @@ def test_format_code_returns_list(pretty_printer):
 
 def test_openbracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    start = 0
     stop = 3
-    raw_java_code = raw_java_code[start:stop]
-    tabbed_java_code = tabbed_java_code[start:stop]
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
 
 def test_closebracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    start = 0
     stop = 10
-    raw_java_code = raw_java_code[start:stop]
-    tabbed_java_code = tabbed_java_code[start:stop]
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
 
 def test_linebreak(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    start = 0
     stop = 12
-    raw_java_code = raw_java_code[start:stop]
-    tabbed_java_code = tabbed_java_code[start:stop]
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
 
 def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    start = 0
     stop = 17
-    raw_java_code = raw_java_code[start:stop]
-    tabbed_java_code = tabbed_java_code[start:stop]
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
 
 def test_brackets_inside_single_quotes(pretty_printer, raw_java_code, tabbed_java_code):
     pretty_printer.indentation = "\t"
-    start = 0
     stop = 20
-    raw_java_code = raw_java_code[start:stop]
-    tabbed_java_code = tabbed_java_code[start:stop]
+    raw_java_code = raw_java_code[0:stop]
+    tabbed_java_code = tabbed_java_code[0:stop]
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == tabbed_java_code
 
