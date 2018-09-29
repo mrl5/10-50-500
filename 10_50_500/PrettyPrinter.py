@@ -52,7 +52,7 @@ class PrettyPrinter:
         nest_lvl = 0
         end_of_line_break = False
         # "{" or "case sth:"
-        nest_regex_pattern = "({|\s*case\s+.*?:\s*$)"
+        nest_regex_pattern = "({|\s*case\s+.*?:\s*$|\s*default\s*.*?:\s*$)"
         indent_break_regex_pattern = "(\s*break;)"
         for row in self.unformatted_code_list:
             line = str(row)
