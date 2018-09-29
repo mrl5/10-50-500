@@ -29,7 +29,7 @@ Scenario:
 
 5) test 'get_project_structure' method:
     - if project doesn't have "Standard Directory Layout": throw "NotAMavenStandardDirectoryLayoutError" exception
-    - don't handle 'verify_directory_layout' exceptions
+    - test if get_project_structure throws exceptions raised from 'verify_directory_layout'
     - if "Standard Directory Layout": return 'self._packages' dictionary with structure "{package: {class: path/to/class}}"
 """
 
@@ -104,10 +104,10 @@ def test_path_doesnt_exist(tmpdir):
 
 
 def test_path_to_file(tmpdir):
-    imaginary_project = tmpdir.mkdir("test_dir").join("im_file.txt")
-    imaginary_project.write("content")
+    path_to_file = tmpdir.mkdir("test_dir").join("im_file.txt")
+    path_to_file.write("content")
     with pytest.raises(NotADirectoryError):
-        verify_directory_layout(str(imaginary_project))
+        verify_directory_layout(str(path_to_file))
 
 
 # get_package_name
@@ -160,6 +160,22 @@ def test_NotAMavenStandardDirectoryLayoutError_exception(explorer, tmpdir):
     os.makedirs(os.path.join(str(test_project), "some", "random", "dir"))
     explorer.project_dir = str(test_project)
     with pytest.raises(explorer.NotAMavenStandardDirectoryLayoutError):
+        explorer.get_project_structure()
+
+
+def test_FileNotFoundError(explorer, tmpdir):
+    test_directory = tmpdir.mkdir("test_dir")
+    imaginary_project = os.path.join(str(test_directory), "imaginary", "project")
+    explorer.project_dir = imaginary_project
+    with pytest.raises(FileNotFoundError):
+        explorer.get_project_structure()
+
+
+def test_NotADirectoryError(explorer, tmpdir):
+    path_to_file = tmpdir.mkdir("test_dir").join("im_file.txt")
+    path_to_file.write("content")
+    explorer.project_dir = str(path_to_file)
+    with pytest.raises(NotADirectoryError):
         explorer.get_project_structure()
 
 
