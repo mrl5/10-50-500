@@ -8,7 +8,6 @@ __author__ = "mrl5"
 
 """
 Scenario:
-1. get_raw_code
     - remove whitespaces from the beginning of the line
     - remove trailing newline
     - remove '/* comments */'
@@ -19,11 +18,6 @@ Scenario:
     - remove multi-line comments (/*\n\n\n*/)
     - read from file
     - return list
-    
-2. pretty_print
-    - "something {"
-    - "}" or "} else"
-    - "} catch (NullPointerException e) {"
 """
 
 
