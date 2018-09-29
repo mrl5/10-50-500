@@ -250,6 +250,16 @@ def test_linebreak(pretty_printer, raw_java_code, tabbed_java_code):
     assert pretty_printer.format_code() == tabbed_java_code
 
 
+def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    start = 0
+    stop = 17
+    raw_java_code = raw_java_code[start:stop]
+    tabbed_java_code = tabbed_java_code[start:stop]
+    pretty_printer.unformatted_code_list = raw_java_code
+    assert pretty_printer.format_code() == tabbed_java_code
+
+
 @pytest.mark.skip
 def test_fourspaced_indent(pretty_printer, raw_java_code, fourspaced_java_code):
     pretty_printer.indentation = "    "

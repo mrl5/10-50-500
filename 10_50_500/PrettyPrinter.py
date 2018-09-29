@@ -56,16 +56,24 @@ class PrettyPrinter:
             # if line doesn't end with "{" or "}" or ";" then it's line break
             line_break = True if not re.match(".*({|}|;)$", line) else False
             wait_for_next_line = True if line.endswith("{") or line_break else False
-            # todo { and } not inside "" or ''
-            nest_lvl += len(re.findall("{", line))
-            nest_lvl -= len(re.findall("}", line))
+
+            # find all characters which make nesting, but are not inside '' or ""
+            nest_lvl += len(re.findall("{", re.sub(r'''
+                                                    [\"\']  # match any single character (double quote or single quote)
+                                                    .*?     # any char zero or more times - "?" forces shortest matches!
+                                                    [\"\']  # match any single character (double quote or single quote)
+                                                    ''', '', line, 0, re.VERBOSE)))
+            nest_lvl -= len(re.findall("}", re.sub("[\"\'].*?[\"\']", '', line, 0)))
             nest_lvl += 1 if line_break else 0
-            # add new line with indentation
+
+            # add new line with an indentation
             formatted_line = nest_lvl * self.indentation + line if not wait_for_next_line else (nest_lvl - 1) * self.indentation + line
             formatted_code.append(formatted_line)
             # retrieve normal nest level
             nest_lvl -= 1 if end_of_line_break else 0
             end_of_line_break = line_break
+            #debug
+            print(formatted_line)
         return formatted_code
 
     class CodeWithIndentationError(Exception):
