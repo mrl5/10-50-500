@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+from PrettyPrinter import PrettyPrinter
 
 __author__ = "mrl5"
 
-from PrettyPrinter import PrettyPrinter
 
 """
 Scenario:
@@ -15,6 +15,8 @@ Scenario:
     - "something {"
     - "}" or "} else"
     - "} catch (NullPointerException e) {"
+    - "case:"
+    - "object.method().method().method;"
     - compare with stripped .java file
 """
 
@@ -23,6 +25,101 @@ Scenario:
 def pretty_printer():
     pp = PrettyPrinter()
     return pp
+
+
+@pytest.fixture(scope="function")
+def raw_java_code():
+    source_code = []
+    source_code.append("package com.tuxnet.utils;")
+    source_code.append("public class Test {")
+    source_code.append("public static void main(String[] args) {")
+    source_code.append("Bash bash = new Bash();")
+    source_code.append("Integer test = 0;")
+    source_code.append("if (true) {")
+    source_code.append("for (String line : bash.verboseCmd(\"ls -la\")) {")
+    source_code.append("System.out.println(line);")
+    source_code.append("}")
+    source_code.append("} else")
+    source_code.append("System.out.println(\"false\");")
+    source_code.append("bash.quiet(\"uname -a\");")
+    source_code.append("try {")
+    source_code.append("bash.quiet(\"ping www.github.com\");")
+    source_code.append("} catch (NullPointerException e) {")
+    source_code.append("System.err.println(\"we are doomed\");")
+    source_code.append("}")
+    source_code.append("switch (test) {")
+    source_code.append("case 0:")
+    source_code.append("boolean worked = test.toString()")
+    source_code.append(".endsWith(\"1\");")
+    source_code.append("case 1:")
+    source_code.append("String s = test.toString();")
+    source_code.append("}")
+    source_code.append("}")
+    source_code.append("}")
+
+
+@pytest.fixture(scope="function")
+def tabbed_java_code():
+    source_code = []
+    source_code.append("package com.tuxnet.utils;")
+    source_code.append("public class Test {")
+    source_code.append("\tpublic static void main(String[] args) {")
+    source_code.append("\t\tBash bash = new Bash();")
+    source_code.append("\t\tInteger test = 0;")
+    source_code.append("\t\tif (true) {")
+    source_code.append("\t\t\tfor (String line : bash.verboseCmd(\"ls -la\")) {")
+    source_code.append("\t\t\t\tSystem.out.println(line);")
+    source_code.append("\t\t\t}")
+    source_code.append("\t\t} else")
+    source_code.append("\t\t\tSystem.out.println(\"false\");")
+    source_code.append("\t\tbash.quiet(\"uname -a\");")
+    source_code.append("\t\ttry {")
+    source_code.append("\t\t\tbash.quiet(\"ping www.github.com\");")
+    source_code.append("\t\t} catch (NullPointerException e) {")
+    source_code.append("\t\t\tSystem.err.println(\"we are doomed\");")
+    source_code.append("\t\t}")
+    source_code.append("\t\tswitch (test) {")
+    source_code.append("\t\t\tcase 0:")
+    source_code.append("\t\t\t\tboolean worked = test.toString()")
+    source_code.append("\t\t\t\t\t\t.endsWith(\"1\");")
+    source_code.append("\t\t\tcase 1:")
+    source_code.append("\t\t\t\tString s = test.toString();")
+    source_code.append("\t\t}")
+    source_code.append("\t}")
+    source_code.append("}")
+    return source_code
+
+
+@pytest.fixture(scope="function")
+def fourspaced_java_code():
+    source_code = []
+    source_code.append("package com.tuxnet.utils;")
+    source_code.append("public class Test {")
+    source_code.append("    public static void main(String[] args) {")
+    source_code.append("        Bash bash = new Bash();")
+    source_code.append("        Integer test = 0;")
+    source_code.append("        if (true) {")
+    source_code.append("            for (String line : bash.verboseCmd(\"ls -la\")) {")
+    source_code.append("                System.out.println(line);")
+    source_code.append("            }")
+    source_code.append("        } else")
+    source_code.append("            System.out.println(\"false\");")
+    source_code.append("        bash.quiet(\"uname -a\");")
+    source_code.append("        try {")
+    source_code.append("            bash.quiet(\"ping www.github.com\");")
+    source_code.append("        } catch (NullPointerException e) {")
+    source_code.append("            System.err.println(\"we are doomed\");")
+    source_code.append("        }")
+    source_code.append("        switch (test) {")
+    source_code.append("            case 0:")
+    source_code.append("                boolean worked = test.toString()")
+    source_code.append("                        .endsWith(\"1\");")
+    source_code.append("            case 1:")
+    source_code.append("                String s = test.toString();")
+    source_code.append("        }")
+    source_code.append("    }")
+    source_code.append("}")
+    return source_code
 
 
 def test_ValueError_when_empty_list(pretty_printer):
