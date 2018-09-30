@@ -7,7 +7,7 @@ __author__ = "mrl5"
 
 class PrettyPrinter:
     """
-    Print Java (or other C-like languages) sourcecode with a given indentation
+    Refactor Java (or other C-like languages) sourcecode with a given indentation
     """
 
     def __init__(self, indentation="    "):
@@ -52,6 +52,7 @@ class PrettyPrinter:
     def _get_nest_lvl(self, line, nest_lvl, line_break):
         """
         Computes nest level for sourcecode block
+
         :param line: line of code to analyse
         :param nest_lvl: current nest level
         :param line_break: logical value to know if line was broken (e.g. "some \n thing")
@@ -78,6 +79,7 @@ class PrettyPrinter:
     def _get_extra_indent(self, line_no, broken_line):
         """
         Provides indentation for broken lines
+
         :param line_no: number of line to be analysed
         :param broken_line: True if line is broken
         :return: extra indent
