@@ -39,7 +39,7 @@ def get_raw_code(file_path):
             # ignore empty lines
             if line != '':
                 # skip multi-line comments (/*)
-                if re.match(r'''
+                if re.search(r'''
                         ^       # start of string
                         /\*     # "/*" string
                         .*      # any character (except line break) zero or more times
@@ -47,9 +47,10 @@ def get_raw_code(file_path):
                     multi_line_comment = True
                     continue
                 # check if multi-line comment was closed (*/)
-                elif re.match(r'''
+                elif re.search(r'''
                         .*      # any character (except line break) zero or more times
                         \*/     # "*/" string
+                        $       # end of string
                         ''', line, re.VERBOSE):
                     multi_line_comment = False
                     line = re.sub(r'''
