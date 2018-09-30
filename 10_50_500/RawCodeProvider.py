@@ -16,14 +16,8 @@ def get_raw_code(file_path):
     multi_line_comment = False
     with open(file_path, "r") as f:
         for row in f:
-            # remove leading spaces
-            line = re.sub(r'''
-                ^       # start of string
-                \s+     # one or more whitespaces
-                ''', '', row, 0, re.VERBOSE)
-
-            # remove trailing newlines and whitespaces
-            line = line.rstrip()
+            # remove leading and trailing whitespaces
+            line = row.strip()
 
             # remove '/* comments */'
             line = re.sub(r'''
