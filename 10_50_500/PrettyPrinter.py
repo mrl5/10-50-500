@@ -83,8 +83,6 @@ class PrettyPrinter:
             nest_lvl -= 1 if indent_break else 0
             nest_lvl -= 1 if end_of_line_break else 0
             end_of_line_break = line_break
-            # debug
-            print(formatted_line)
         return formatted_code
 
     class CodeWithIndentationError(Exception):
