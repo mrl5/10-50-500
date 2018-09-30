@@ -14,11 +14,11 @@ class PrettyPrinter:
         self.indentation = indentation
         self.unformatted_code_list = None
         self._regex_patterns = {
-            "nest": "({+|^case\s+.*?:|^default\s*.*?:)",  # "{", "(", "[", "case x:", "default:"
-            "unnest": "(}+)",  # "}", ")", "]"
-            "indent_break": "(\\bbreak\\b\s*;)",  # "break;"
-            "open_bracket": "({+|\(+|\[+)",  # "{", "(", "[" (+ = one or more times)
-            "close_bracket": "(}+|\)+|\]+)",  # "}", ")", "]" (+ = one or more times)
+            "nest": "({+|^case\s+.*?:|^default\s*.*?:)",    # "{", "case x:", "default:"
+            "unnest": "(}+)",                               # "}"
+            "indent_break": "(\\bbreak\\b\s*;)",            # "break;"
+            "open_bracket": "{+",                           # "{"  (+ = one or more times)
+            "close_bracket": "}+",                          # "}" (+ = one or more times)
         }
 
     def _verify_code_list(self):
@@ -34,6 +34,7 @@ class PrettyPrinter:
             raise TypeError(error_msg) from ae
         if not self.unformatted_code_list:
             raise ValueError(error_msg)
+
         # list with numbers of lines with indentation
         indent_lines = [i + 1 if re.match("^\s+", line) else None for i, line in enumerate(self.unformatted_code_list)]
         indent_lines = list(filter(None.__ne__, indent_lines))
