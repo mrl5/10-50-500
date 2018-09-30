@@ -18,6 +18,7 @@ Scenario:
     - remove multi-line comments (/*\n\n\n*/)
     - read from file
     - return list
+    - dont remove '/* comments */' and '//comments' if they are inside double quotes
 """
 
 
@@ -109,7 +110,8 @@ def test_rm_multiline_comments_tricky(directory):
     input_list.append('     * If "manners maketh man" as someone said')
     input_list.append("     * He's the hero of the day")
     input_list.append("     * It takes a man to suffer ignorance and smile")
-    input_list.append("*/    Be yourself")
+    input_list.append("*/")
+    input_list.append("Be yourself")
     input_list.append("no matter what they say")
     output_list = ["Be yourself", "no matter what they say"]
     write_to_file(file, input_list)
@@ -122,3 +124,16 @@ def test_return_list(directory):
     input_list = ["test"]
     write_to_file(file, input_list)
     assert type(get_raw_code(file)) is list
+
+
+def test_gotcha_comment_in_doublequotes(directory):
+    test_dir = directory
+    file = os.path.join(str(test_dir), "file.txt")
+    input_list = []
+    input_list.append("\"/*gotcha*/\"")
+    input_list.append("dude where is my \"/* comment */\"")
+    input_list.append("\"//dont know\" mate")
+    output_list = ["\"/*gotcha*/\"", "dude where is my \"/* comment */\"", "\"//dont know\" mate"]
+    write_to_file(file, input_list)
+    print(output_list)
+    assert get_raw_code(file) == output_list
