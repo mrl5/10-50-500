@@ -17,9 +17,9 @@ class PrettyPrinter:
             "nest": "({+|^case\s+.*?:|^default\s*.*?:)",    # "{", "case x:", "default:"
             "unnest": "(}+)",                               # "}"
             "indent_break": "(\\bbreak\\b\s*;)",            # "break;"
-            "open_bracket": "{+",                           # "{"  (+ = one or more times)
-            "close_bracket": "}+",                          # "}" (+ = one or more times)
+            "line_break": ".*[{};:]$"                       # chars which create new blocks of code
         }
+        self._brackets_nesting = 0
 
     def _verify_code_list(self):
         """
@@ -56,6 +56,11 @@ class PrettyPrinter:
         :param line_break: logical value to know if line was broken (e.g. "some \n thing")
         :return: new nest level
         """
+        # track {} brackets
+        self._brackets_nesting += len(re.findall("{+", re.sub("[\"\'].*?[\"\']", '', line)))
+        self._brackets_nesting -= len(re.findall("}+", re.sub("[\"\'].*?[\"\']", '', line)))
+
+        # look for nesting patterns
         nest_lvl += len(re.findall(
             self._regex_patterns["nest"], re.sub(r'''   # ignore nesting characters which are inside '' or ""
                                                 [\"\']  # match any single character (double quote or single quote)
@@ -63,7 +68,10 @@ class PrettyPrinter:
                                                 [\"\']  # match any single character (double quote or single quote)
                                                 ''', '', line, 0, re.VERBOSE)))
         nest_lvl -= len(re.findall(self._regex_patterns["unnest"], re.sub("[\"\'].*?[\"\']", '', line)))
+
+        # nest_lvl correction when needed
         nest_lvl += 1 if line_break else 0
+        nest_lvl = self._brackets_nesting if line.endswith("}") and self._brackets_nesting != nest_lvl else nest_lvl
         return nest_lvl
 
     def format_code(self, unformatted_code_list=None):
@@ -78,25 +86,26 @@ class PrettyPrinter:
         self._verify_code_list()
         formatted_code = []
         nest_lvl = 0
-        end_of_line_break = False
-        for row in self.unformatted_code_list:
-            line = str(row)
-            # if line doesn't end with "{", "}", ";" or ":" then it's line break
-            line_break = True if not re.search(".*[{};:]$", line) else False
-            # some special commands end block of code (e.g. "break;")
+        broken_line = False
+        for line in self.unformatted_code_list:
+            line_break = True if not re.search(self._regex_patterns["line_break"], line) else False
             indent_break = re.search(self._regex_patterns["indent_break"], re.sub("[\"\'].*?[\"\']", '', line))
-            wait_for_next_line = True if re.search(self._regex_patterns["nest"],
-                                                   re.sub("[\"\'].*?[\"\']", '', line)) or line_break else False
 
             nest_lvl = self._get_nest_lvl(line, nest_lvl, line_break)
+            wait_for_next_line = True if re.search(self._regex_patterns["nest"],
+                                                   re.sub("[\"\'].*?[\"\']", '', line)) or line_break else False
             indent = nest_lvl * self.indentation if not wait_for_next_line else (nest_lvl - 1) * self.indentation
+
+            # Line break by method: object.method1().method2()
+            #                                 .method3()
+            indent += self.indentation if line.startswith(".") and broken_line else ''
             formatted_line = indent + line
             formatted_code.append(formatted_line)
-            # retrieve normal nest level
+
+            # nest_lvl correction when needed
             nest_lvl -= 1 if indent_break else 0
-            nest_lvl -= 1 if end_of_line_break else 0
-            end_of_line_break = line_break
-            # todo: if } compare with nesting of last {
+            nest_lvl -= 1 if broken_line else 0
+            broken_line = line_break
         return formatted_code
 
     class CodeWithIndentationError(Exception):
