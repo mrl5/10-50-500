@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+import os
+import re
 from PrettyPrinter import PrettyPrinter
 
 __author__ = "mrl5"
@@ -38,131 +40,18 @@ def pretty_printer():
 
 
 @pytest.fixture(scope="function")
-def raw_java_code():
-    source_code = []
-    source_code.append("package com.tuxnet.utils;")
-    source_code.append("public class Test {")
-    source_code.append("public static void main(String[] args) {")
-    source_code.append("Bash bash = new Bash();")
-    source_code.append("Integer test = 0;")
-    source_code.append("if (true) {")
-    source_code.append("for (String line : bash.verboseCmd(\"ls -la\")) {")
-    source_code.append("System.out.println(line);")
-    source_code.append("}")
-    source_code.append("} else")
-    source_code.append("System.out.println(\"false\");")
-    source_code.append("bash.quiet(\"uname -a\");")
-    source_code.append("try {")
-    source_code.append("bash.quiet(\"ping www.github.com\");")
-    source_code.append("} catch (NullPointerException e) {")
-    source_code.append("System.err.println(\"test\");")
-    source_code.append("System.err.println(\"{we {{ are doomed {{{{\");")
-    source_code.append("System.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
-    source_code.append("System.err.println('{' + '{' + '{' + '{');")
-    source_code.append(
-        "System.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
-    source_code.append("}")
-    source_code.append("switch (test) {")
-    source_code.append("case 0:")
-    source_code.append("String test = \"something something\";")
-    source_code.append("String s = test.toString();")
-    source_code.append("break;")
-    source_code.append("case 1:")
-    source_code.append("boolean worked = test.toString()")
-    source_code.append(".endsWith(\"1\");")
-    source_code.append("break;")
-    source_code.append("default:")
-    source_code.append("String test = \"right\";")
-    source_code.append("break;")
-    source_code.append("}")
-    source_code.append("}")
-    source_code.append("}")
+def original_java_code():
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    sample_java_file = os.path.join(script_dir, "sample_java_files", "raw.java")
+    with open(sample_java_file, "r") as f:
+        source_code = [row.rstrip() for row in f]
     return source_code
 
 
 @pytest.fixture(scope="function")
-def tabbed_java_code():
-    source_code = []
-    source_code.append("package com.tuxnet.utils;")
-    source_code.append("public class Test {")
-    source_code.append("\tpublic static void main(String[] args) {")
-    source_code.append("\t\tBash bash = new Bash();")
-    source_code.append("\t\tInteger test = 0;")
-    source_code.append("\t\tif (true) {")
-    source_code.append("\t\t\tfor (String line : bash.verboseCmd(\"ls -la\")) {")
-    source_code.append("\t\t\t\tSystem.out.println(line);")
-    source_code.append("\t\t\t}")
-    source_code.append("\t\t} else")
-    source_code.append("\t\t\tSystem.out.println(\"false\");")
-    source_code.append("\t\tbash.quiet(\"uname -a\");")
-    source_code.append("\t\ttry {")
-    source_code.append("\t\t\tbash.quiet(\"ping www.github.com\");")
-    source_code.append("\t\t} catch (NullPointerException e) {")
-    source_code.append("\t\t\tSystem.err.println(\"test\");")
-    source_code.append("\t\t\tSystem.err.println(\"{we {{ are doomed {{{{\");")
-    source_code.append("\t\t\tSystem.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
-    source_code.append("\t\t\tSystem.err.println('{' + '{' + '{' + '{');")
-    source_code.append(
-        "\t\t\tSystem.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
-    source_code.append("\t\t}")
-    source_code.append("\t\tswitch (test) {")
-    source_code.append("\t\t\tcase 0:")
-    source_code.append("\t\t\t\tString test = \"something something\";")
-    source_code.append("\t\t\t\tString s = test.toString();")
-    source_code.append("\t\t\t\tbreak;")
-    source_code.append("\t\t\tcase 1:")
-    source_code.append("\t\t\t\tboolean worked = test.toString()")
-    source_code.append("\t\t\t\t\t.endsWith(\"1\");")
-    source_code.append("\t\t\t\tbreak;")
-    source_code.append("\t\t\tdefault:")
-    source_code.append("\t\t\t\tString test = \"right\";")
-    source_code.append("\t\t\t\tbreak;")
-    source_code.append("\t\t}")
-    source_code.append("\t}")
-    source_code.append("}")
-    return source_code
-
-
-@pytest.fixture(scope="function")
-def fourspaced_java_code():
-    source_code = []
-    source_code.append("package com.tuxnet.utils;")
-    source_code.append("public class Test {")
-    source_code.append("    public static void main(String[] args) {")
-    source_code.append("        Bash bash = new Bash();")
-    source_code.append("        Integer test = 0;")
-    source_code.append("        if (true) {")
-    source_code.append("            for (String line : bash.verboseCmd(\"ls -la\")) {")
-    source_code.append("                System.out.println(line);")
-    source_code.append("            }")
-    source_code.append("        } else")
-    source_code.append("            System.out.println(\"false\");")
-    source_code.append("        bash.quiet(\"uname -a\");")
-    source_code.append("        try {")
-    source_code.append("            bash.quiet(\"ping www.github.com\");")
-    source_code.append("        } catch (NullPointerException e) {")
-    source_code.append("            System.err.println(\"test\");")
-    source_code.append("            System.err.println(\"{we {{ are doomed {{{{\");")
-    source_code.append("            System.err.println(\"}}}}}}}}}}there is }}}}}}}}}}}}}stil hope }}}}}}}}}}}}}}\");")
-    source_code.append("            System.err.println('{' + '{' + '{' + '{');")
-    source_code.append(
-        "            System.err.println('}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}' + '}');")
-    source_code.append("        }")
-    source_code.append("        switch (test) {")
-    source_code.append("            case 0:")
-    source_code.append("                String test = \"something something\";")
-    source_code.append("                String s = test.toString();")
-    source_code.append("                break;")
-    source_code.append("            case 1:")
-    source_code.append("                boolean worked = test.toString()")
-    source_code.append("                    .endsWith(\"1\");")
-    source_code.append("                break;")
-    source_code.append("            default:")
-    source_code.append("                String test = \"right\";")
-    source_code.append("                break;")
-    source_code.append("        }")
-    source_code.append("    }")
-    source_code.append("}")
+def raw_java_code(original_java_code):
+    original_indentation_style = "\s{4}"
+    source_code = [re.sub(original_indentation_style, '', line) for line in original_java_code]
     return source_code
 
 
@@ -229,92 +118,66 @@ def test_format_code_returns_list(pretty_printer):
     assert isinstance(pretty_printer.format_code(), list)
 
 
-def test_openbracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 3
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_closebracket_ending(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 10
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_linebreak(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 12
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_close_and_open_brackets_in_one_line(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 16
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 18
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_brackets_inside_single_quotes(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 21
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_case_indent(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 25
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_brake_indent(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 27
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_switch_case_default_break(pretty_printer, raw_java_code, tabbed_java_code):
-    pretty_printer.indentation = "\t"
-    stop = 33
-    raw_java_code = raw_java_code[0:stop]
-    tabbed_java_code = tabbed_java_code[0:stop]
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == tabbed_java_code
-
-
-def test_fourspaced_indent(pretty_printer, raw_java_code, fourspaced_java_code):
+def test_openbracket_ending(pretty_printer, raw_java_code, original_java_code):
     pretty_printer.indentation = "    "
-    pretty_printer.unformatted_code_list = raw_java_code
-    assert pretty_printer.format_code() == fourspaced_java_code
+    stop = 4
+    pretty_printer.unformatted_code_list = raw_java_code[0:stop]
+    assert pretty_printer.format_code() == original_java_code[0:stop]
 
-def test_java_code_given_in_method_argument(pretty_printer, raw_java_code, tabbed_java_code):
+
+def test_java_code_list_given_in_method_argument(pretty_printer, raw_java_code, original_java_code):
+    pretty_printer.indentation = "    "
+    stop = 4
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_fourspaces_is_default_indent(pretty_printer, raw_java_code, original_java_code):
+    stop = 4
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_tabbed_indent(pretty_printer):
     pretty_printer.indentation = "\t"
-    assert pretty_printer.format_code(raw_java_code) == tabbed_java_code
+    flat_java_code = ["public void test() {", "nesting();"]
+    tabbed_java_code = ["public void test() {", "\tnesting();"]
+    assert pretty_printer.format_code(flat_java_code) == tabbed_java_code
+
+
+def test_closebracket_ending(pretty_printer, raw_java_code, original_java_code):
+    stop = 10
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_linebreak(pretty_printer, raw_java_code, original_java_code):
+    stop = 12
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_close_and_open_brackets_in_one_line(pretty_printer, raw_java_code, original_java_code):
+    stop = 17
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_brackets_inside_double_quotes(pretty_printer, raw_java_code, original_java_code):
+    stop = 21
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_brackets_inside_single_quotes(pretty_printer, raw_java_code, original_java_code):
+    stop = 25
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_case_indent(pretty_printer, raw_java_code, original_java_code):
+    stop = 30
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_brake_indent(pretty_printer, raw_java_code, original_java_code):
+    stop = 32
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
+def test_switch_case_default_break(pretty_printer, raw_java_code, original_java_code):
+    stop = 34
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
