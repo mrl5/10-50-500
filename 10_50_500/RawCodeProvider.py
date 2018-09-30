@@ -69,3 +69,16 @@ def get_raw_code(file_path):
                 if not multi_line_comment:
                     raw_code.append(line)
     return raw_code
+
+
+def main():
+    path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
+    pp = PrettyPrinter()
+    for formatted_line in pp.format_code(get_raw_code(path)):
+        print(formatted_line)
+
+
+if __name__ == "__main__":
+    import sys
+    from PrettyPrinter import PrettyPrinter
+    main()
