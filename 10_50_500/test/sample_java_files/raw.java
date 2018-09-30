@@ -65,5 +65,12 @@ public class Test {
             default:
                 String test3 = "right";
         }
+        String sqlStatement = "SELECT tickers.id_ticker, tickers.symbol, tickers.name, currencies.symbol AS currency, " +
+                "cat_main.name AS category, cat_subcat.name AS subcategory, " +
+                "tickers.stooq_symbol, tickers.yahoo_symbol FROM tickers " +
+                "INNER JOIN currencies ON  tickers.currency=currencies.id_currency " +
+                "INNER JOIN cat_main ON tickers.category=cat_main.id_category " +
+                "INNER JOIN cat_subcat ON tickers.subcategory=cat_subcat.id_subcat " +
+                "ORDER BY tickers.id_ticker ASC";
     }
 }
