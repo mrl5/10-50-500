@@ -40,13 +40,15 @@ class PrettyPrinter:
         if trailing_whitespaces_lines:
             raise self.CodeWithTrailingWhitespacesError(trailing_whitespaces_lines_list=trailing_whitespaces_lines)
 
-    def format_code(self):
+    def format_code(self, unformatted_code_list=None):
         """
         Formats code into blocks with an indentation style
 
         :param unformatted_code_list: list with code to be formatted into blocks of code
         :return: list with pretty-formatted code
         """
+        self.unformatted_code_list = unformatted_code_list if unformatted_code_list is not None \
+            else self.unformatted_code_list
         self._verify_code_list()
         formatted_code = []
         nest_lvl = 0

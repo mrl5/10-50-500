@@ -314,3 +314,7 @@ def test_fourspaced_indent(pretty_printer, raw_java_code, fourspaced_java_code):
     pretty_printer.indentation = "    "
     pretty_printer.unformatted_code_list = raw_java_code
     assert pretty_printer.format_code() == fourspaced_java_code
+
+def test_java_code_given_in_method_argument(pretty_printer, raw_java_code, tabbed_java_code):
+    pretty_printer.indentation = "\t"
+    assert pretty_printer.format_code(raw_java_code) == tabbed_java_code
