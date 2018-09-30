@@ -52,8 +52,8 @@ class PrettyPrinter:
         nest_lvl = 0
         end_of_line_break = False
         # "{" or "case sth:"
-        nest_regex_pattern = "({|\s*case\s+.*?:\s*$|\s*default\s*.*?:\s*$)"
-        indent_break_regex_pattern = "(\s*break;)"
+        nest_regex_pattern = "({|^case\s+.*?:|^default\s*.*?:)"
+        indent_break_regex_pattern = "(\\bbreak\\b\s*;)"
         for row in self.unformatted_code_list:
             line = str(row)
             # if line doesn't end with "{" or "}" or ";" then it's line break
