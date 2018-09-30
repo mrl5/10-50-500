@@ -53,6 +53,7 @@ class PrettyPrinter:
         end_of_line_break = False
         # "{" or "case sth:"
         nest_regex_pattern = "({|^case\s+.*?:|^default\s*.*?:)"
+        unnest_regex_pattern = "}"
         indent_break_regex_pattern = "(\\bbreak\\b\s*;)"
         for row in self.unformatted_code_list:
             line = str(row)
@@ -68,7 +69,7 @@ class PrettyPrinter:
                                                     .*?     # any char zero or more times - "?" forces shortest matches!
                                                     [\"\']  # match any single character (double quote or single quote)
                                                     ''', '', line, 0, re.VERBOSE)))
-            nest_lvl -= len(re.findall("}", re.sub("[\"\'].*?[\"\']", '', line)))
+            nest_lvl -= len(re.findall(unnest_regex_pattern, re.sub("[\"\'].*?[\"\']", '', line)))
             # add nesting on line break
             nest_lvl += 1 if line_break else 0
 
