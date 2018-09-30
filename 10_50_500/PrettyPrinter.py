@@ -13,6 +13,13 @@ class PrettyPrinter:
     def __init__(self, indentation="    "):
         self.indentation = indentation
         self.unformatted_code_list = None
+        self._regex_patterns = {
+            "nest": "({+|^case\s+.*?:|^default\s*.*?:)",  # "{", "(", "[", "case x:", "default:"
+            "unnest": "(}+)",  # "}", ")", "]"
+            "indent_break": "(\\bbreak\\b\s*;)",  # "break;"
+            "open_bracket": "({+|\(+|\[+)",  # "{", "(", "[" (+ = one or more times)
+            "close_bracket": "(}+|\)+|\]+)",  # "}", ")", "]" (+ = one or more times)
+        }
 
     def _verify_code_list(self):
         """
@@ -29,16 +36,34 @@ class PrettyPrinter:
             raise ValueError(error_msg)
         # list with numbers of lines with indentation
         indent_lines = [i + 1 if re.match("^\s+", line) else None for i, line in enumerate(self.unformatted_code_list)]
-        # list with elements which are not equal to None
         indent_lines = list(filter(None.__ne__, indent_lines))
         if indent_lines:
             raise self.CodeWithIndentationError(indent_lines_list=indent_lines)
+
         # list with numbers of lines with trailing whitespaces
         trailing_whitespaces_lines = [i + 1 if re.match(".*\s+$", line) else None for i, line in
                                       enumerate(self.unformatted_code_list)]
         trailing_whitespaces_lines = list(filter(None.__ne__, trailing_whitespaces_lines))
         if trailing_whitespaces_lines:
             raise self.CodeWithTrailingWhitespacesError(trailing_whitespaces_lines_list=trailing_whitespaces_lines)
+
+    def _get_nest_lvl(self, line, nest_lvl, line_break):
+        """
+        Computes nest level for sourcecode block
+        :param line: line of code to analyse
+        :param nest_lvl: current nest level
+        :param line_break: logical value to know if line was broken (e.g. "some \n thing")
+        :return: new nest level
+        """
+        nest_lvl += len(re.findall(
+            self._regex_patterns["nest"], re.sub(r'''   # ignore nesting characters which are inside '' or ""
+                                                [\"\']  # match any single character (double quote or single quote)
+                                                .*?     # any char zero or more times - "?" forces shortest matches!
+                                                [\"\']  # match any single character (double quote or single quote)
+                                                ''', '', line, 0, re.VERBOSE)))
+        nest_lvl -= len(re.findall(self._regex_patterns["unnest"], re.sub("[\"\'].*?[\"\']", '', line)))
+        nest_lvl += 1 if line_break else 0
+        return nest_lvl
 
     def format_code(self, unformatted_code_list=None):
         """
@@ -53,29 +78,16 @@ class PrettyPrinter:
         formatted_code = []
         nest_lvl = 0
         end_of_line_break = False
-        # "{" or "case sth:"
-        nest_regex_pattern = "({|^case\s+.*?:|^default\s*.*?:)"
-        unnest_regex_pattern = "}"
-        indent_break_regex_pattern = "(\\bbreak\\b\s*;)"
         for row in self.unformatted_code_list:
             line = str(row)
-            # if line doesn't end with "{" or "}" or ";" then it's line break
+            # if line doesn't end with "{", "}", ";" or ":" then it's line break
             line_break = True if not re.search(".*[{};:]$", line) else False
-            indent_break = re.search(indent_break_regex_pattern, re.sub("[\"\'].*?[\"\']", '', line))
-            wait_for_next_line = True if re.search(nest_regex_pattern,
+            # some special commands end block of code (e.g. "break;")
+            indent_break = re.search(self._regex_patterns["indent_break"], re.sub("[\"\'].*?[\"\']", '', line))
+            wait_for_next_line = True if re.search(self._regex_patterns["nest"],
                                                    re.sub("[\"\'].*?[\"\']", '', line)) or line_break else False
 
-            # find all characters which make nesting, but are not inside '' or ""
-            nest_lvl += len(re.findall(nest_regex_pattern, re.sub(r'''
-                                                    [\"\']  # match any single character (double quote or single quote)
-                                                    .*?     # any char zero or more times - "?" forces shortest matches!
-                                                    [\"\']  # match any single character (double quote or single quote)
-                                                    ''', '', line, 0, re.VERBOSE)))
-            nest_lvl -= len(re.findall(unnest_regex_pattern, re.sub("[\"\'].*?[\"\']", '', line)))
-            # add nesting on line break
-            nest_lvl += 1 if line_break else 0
-
-            # add new line with an indentation
+            nest_lvl = self._get_nest_lvl(line, nest_lvl, line_break)
             indent = nest_lvl * self.indentation if not wait_for_next_line else (nest_lvl - 1) * self.indentation
             formatted_line = indent + line
             formatted_code.append(formatted_line)
@@ -83,6 +95,7 @@ class PrettyPrinter:
             nest_lvl -= 1 if indent_break else 0
             nest_lvl -= 1 if end_of_line_break else 0
             end_of_line_break = line_break
+            # todo: if } compare with nesting of last {
         return formatted_code
 
     class CodeWithIndentationError(Exception):
