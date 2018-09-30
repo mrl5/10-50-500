@@ -183,11 +183,15 @@ def test_switch_case_default_break(pretty_printer, raw_java_code, original_java_
     assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
 
 
-def test_real_line_break(pretty_printer, raw_java_code, original_java_code):
+def test_brackets_tracking(pretty_printer, raw_java_code, original_java_code):
     stop = 38
     assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
 
 
+def test_string_line_break(pretty_printer, raw_java_code, original_java_code):
+    stop = 75
+    assert pretty_printer.format_code(raw_java_code[0:stop]) == original_java_code[0:stop]
+
+
 def test_whole_file(pretty_printer, raw_java_code, original_java_code):
-    stop = 38
     assert pretty_printer.format_code(raw_java_code) == original_java_code
