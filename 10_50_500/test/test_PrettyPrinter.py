@@ -42,7 +42,7 @@ def pretty_printer():
 @pytest.fixture(scope="function")
 def original_java_code():
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    sample_java_file = os.path.join(script_dir, "sample_java_files", "raw.java")
+    sample_java_file = os.path.join(script_dir, "sample_java_files", "sample01.java")
     with open(sample_java_file, "r") as f:
         source_code = [row.rstrip() for row in f]
     return source_code
