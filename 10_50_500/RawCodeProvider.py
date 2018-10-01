@@ -68,12 +68,10 @@ def get_raw_code(file_path):
 
 def main():
     path = sys.argv[1] if (sys.argv[0] == __file__) else sys.argv[0]
-    pp = PrettyPrinter()
-    for formatted_line in pp.format_code(get_raw_code(path)):
-        print(formatted_line)
+    for line in get_raw_code(path):
+        print(line)
 
 
 if __name__ == "__main__":
     import sys
-    from PrettyPrinter import PrettyPrinter
     main()
