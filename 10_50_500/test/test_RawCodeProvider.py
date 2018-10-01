@@ -135,5 +135,4 @@ def test_gotcha_comment_in_doublequotes(directory):
     input_list.append("\"//dont know\" mate")
     output_list = ["\"/*gotcha*/\"", "dude where is my \"/* comment */\"", "\"//dont know\" mate"]
     write_to_file(file, input_list)
-    print(output_list)
     assert get_raw_code(file) == output_list
