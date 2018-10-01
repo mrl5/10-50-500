@@ -117,8 +117,7 @@ class PrettyPrinter:
             formatted_code.append(formatted_line)
 
             # nest_lvl correction when needed
-            nest_lvl -= 1 if indent_break else 0
-            nest_lvl -= 1 if broken_line else 0
+            nest_lvl -= 1 if indent_break or broken_line else 0
             broken_line = line_break
         return formatted_code
 
