@@ -7,7 +7,7 @@ __author__ = "mrl5"
 
 class PrettyPrinter:
     """
-    Refactor Java (or other C-like languages) sourcecode with a given indentation
+    Refactors Java (or other C-like languages) sourcecode with a given indentation
     """
 
     def __init__(self, indentation="    "):
@@ -18,7 +18,7 @@ class PrettyPrinter:
             "unnest": "(}+)",                               # "}"
             "indent_break": "(\\bbreak\\b\s*;)",            # "break;"
             "line_end": ".*[{};:]$",                        # chars which end lines
-            "line_break": ".*[+\-*/]$"                             # chars for breaking lines
+            "line_break": ".*[+\-*/]$"                      # chars for breaking lines
         }
         self._brackets_nesting = 0
 
@@ -37,15 +37,13 @@ class PrettyPrinter:
             raise ValueError(error_msg)
 
         # list with numbers of lines with indentation
-        indent_lines = [i + 1 if re.match("^\s+", line) else None for i, line in enumerate(self.unformatted_code_list)]
-        indent_lines = list(filter(None.__ne__, indent_lines))
+        indent_lines = [i + 1 for i, line in enumerate(self.unformatted_code_list) if re.match("^\s+", line)]
         if indent_lines:
             raise self.CodeWithIndentationError(indent_lines_list=indent_lines)
 
         # list with numbers of lines with trailing whitespaces
-        trailing_whitespaces_lines = [i + 1 if re.match(".*\s+$", line) else None for i, line in
-                                      enumerate(self.unformatted_code_list)]
-        trailing_whitespaces_lines = list(filter(None.__ne__, trailing_whitespaces_lines))
+        trailing_whitespaces_lines = [i + 1 for i, line in enumerate(self.unformatted_code_list) if
+                                      re.match(".*\s+$", line)]
         if trailing_whitespaces_lines:
             raise self.CodeWithTrailingWhitespacesError(trailing_whitespaces_lines_list=trailing_whitespaces_lines)
 
@@ -119,8 +117,7 @@ class PrettyPrinter:
             formatted_code.append(formatted_line)
 
             # nest_lvl correction when needed
-            nest_lvl -= 1 if indent_break else 0
-            nest_lvl -= 1 if broken_line else 0
+            nest_lvl -= 1 if indent_break or broken_line else 0
             broken_line = line_break
         return formatted_code
 
