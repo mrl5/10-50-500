@@ -43,7 +43,7 @@ class Explorer:
             # add packages to the set
             packages = set()
             for root, dirs, files in os.walk(java_sources, topdown=False):
-                for file in files:
+                for f in files:
                     package = re.sub("{}{}".format("^", java_sources), '', root)
                     # //com/some/package -> com/some/package
                     package = re.sub("{}{}{}".format("^", os.sep, "+"), '', package)
