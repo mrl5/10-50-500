@@ -7,7 +7,7 @@ __author__ = "mrl5"
 
 class PrettyPrinter:
     """
-    Refactor Java (or other C-like languages) sourcecode with a given indentation
+    Refactors Java (or other C-like languages) sourcecode with a given indentation
     """
 
     def __init__(self, indentation="    "):
@@ -18,7 +18,7 @@ class PrettyPrinter:
             "unnest": "(}+)",                               # "}"
             "indent_break": "(\\bbreak\\b\s*;)",            # "break;"
             "line_end": ".*[{};:]$",                        # chars which end lines
-            "line_break": ".*[+\-*/]$"                             # chars for breaking lines
+            "line_break": ".*[+\-*/]$"                      # chars for breaking lines
         }
         self._brackets_nesting = 0
 
